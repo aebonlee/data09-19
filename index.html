@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>인터페이스 옵션 관리</title>
+  <meta name="description" content="고객사·장비별 엔진 인터페이스 옵션을 담당자가 직접 늘릴 수 있는 카탈로그로 통합 관리하고, 고객사·지역·장비 유형별 옵션 사용 빈도·비율을 보여 주는 브라우저 도구(1단계 시연판)">
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+  <header class="site-header">
+    <div class="inner header-inner">
+      <a class="brand" href="#/records">
+        <span class="brand-name">인터페이스 옵션 관리</span>
+        <span class="brand-sub">옵션 카탈로그 · 옵션 내역 · 사용 빈도 · 기준별 비교</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="주 메뉴">
+        <a href="#/records" data-route="records">옵션 내역</a>
+        <a href="#/catalog" data-route="catalog">옵션 카탈로그</a>
+        <a href="#/stats" data-route="stats">사용 빈도</a>
+        <a href="#/pivot" data-route="pivot">기준별 비교</a>
+        <a href="#/data" data-route="data">백업·복원</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="sampleBanner" class="sample-banner" hidden>지금 보이는 것은 <strong>예시 데이터</strong>입니다. 고객사·장비·옵션 선택 내역은 모두 가상의 값입니다.</div>
+  <div id="storeBanner" class="store-banner" hidden>이 브라우저에서는 저장소를 쓸 수 없어, 창을 닫으면 데이터가 사라집니다. 작업 후 「백업·복원」에서 백업 파일을 저장해 두세요.</div>
+
+  <main id="main" class="inner main" tabindex="-1"></main>
+
+  <footer class="site-footer">
+    <div class="inner">1단계 시연판 · 고객사 정보는 서버로 보내지 않고 이 브라우저와 내 PC의 파일에만 둡니다</div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog id="dialog" class="dialog">
+    <form method="dialog" class="dialog-body" id="dialogForm">
+      <h2 id="dialogTitle"></h2>
+      <div id="dialogContent"></div>
+      <div class="dialog-actions" id="dialogActions"></div>
+    </form>
+  </dialog>
+
+  <!-- 로컬 파일(file://)로 열어도 돌도록 module 이 아닌 일반 스크립트로 불러옵니다 -->
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/sample-data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

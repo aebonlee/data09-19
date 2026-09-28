@@ -1,0 +1,73 @@
+﻿Customer,Engine Suffix,Equipment,Region,Power,ATS type,CAN SA,Pedal type,starter control type,check engine lamp,예시 옵션 X
+예시고객사 A,EX101,굴삭기,한국,180,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 A,EX102,굴삭기,한국,165,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
+예시고객사 A,EX103,지게차,한국,70,예시 ATS-B,예시 SA-2,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
+예시고객사 A,EX104,굴삭기,한국,150,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 A,EX105,굴삭기,한국,180,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN,예시 X-1
+예시고객사 A,EX106,지게차,한국,40,예시 ATS-B,예시 SA-1,예시 Pedal-C,예시 Starter-B,HW type,예시 X-1
+예시고객사 A,EX107,굴삭기,한국,195,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-2
+예시고객사 A,EX108,굴삭기,한국,150,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 A,EX109,지게차,한국,50,예시 ATS-C,예시 SA-2,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
+예시고객사 A,EX110,굴삭기,한국,165,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 A,EX111,굴삭기,한국,180,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 A,EX112,지게차,한국,70,예시 ATS-C,예시 SA-2,예시 Pedal-B,예시 Starter-B,CAN type,예시 X-1
+예시고객사 B,EX113,발전기,한국,300,예시 ATS-B,예시 SA-2,예시 Pedal-C,예시 Starter-B,CAN type,예시 X-2
+예시고객사 B,EX114,발전기,한국,260,예시 ATS-B,예시 SA-2,,예시 Starter-A,CAN,예시 X-1
+예시고객사 B,EX115,굴삭기,한국,135,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 B,EX116,발전기,한국,200,예시 ATS-C,예시 SA-1,,예시 Starter-B,CAN type,예시 X-2
+예시고객사 B,EX117,발전기,한국,300,예시 ATS-B,예시 SA-2,,예시 Starter-A,HW type,예시 X-1
+예시고객사 B,EX118,굴삭기,한국,165,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 B,EX119,발전기,한국,300,예시 ATS-A,예시 SA-1,,예시 Starter-B,CAN type,예시 X-2
+예시고객사 B,EX120,발전기,한국,320,예시 ATS-B,예시 SA-1,,예시 Starter-B,CAN type,예시 X-1
+예시고객사 B,EX121,굴삭기,한국,165,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
+예시고객사 B,EX122,발전기,한국,320,예시 ATS-C,예시 SA-2,,예시 Starter-B,HW type,예시 X-2
+예시고객사 B,EX123,발전기,한국,280,예시 ATS-A,예시 SA-1,,예시 Starter-A,hw type,예시 X-1
+예시고객사 B,EX124,굴삭기,한국,180,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
+예시고객사 C,EX125,굴삭기,유럽,90,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 C,EX126,굴삭기,유럽,120,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
+예시고객사 C,EX127,발전기,유럽,220,예시 ATS-A,예시 SA-1,,예시 Starter-A,CAN type,예시 X-1
+예시고객사 C,EX128,굴삭기,유럽,180,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 C,EX129,굴삭기,유럽,120,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 C,EX130,발전기,유럽,340,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-B,HW type,예시 X-1
+예시고객사 C,EX131,굴삭기,유럽,135,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 C,EX132,굴삭기,유럽,195,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN,예시 X-1
+예시고객사 C,EX133,발전기,유럽,360,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
+예시고객사 C,EX134,굴삭기,유럽,90,예시 ATS-A,예시 SA-2,예시 Pedal-C,예시 Starter-B,HW type,예시 X-2
+예시고객사 C,EX135,굴삭기,유럽,105,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-1
+예시고객사 C,EX136,발전기,유럽,380,예시 ATS-A,예시 SA-2,,예시 Starter-A,HW type,예시 X-1
+예시고객사 D,EX137,지게차,유럽,50,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-2
+예시고객사 D,EX138,지게차,유럽,90,예시 ATS-B,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-1
+예시고객사 D,EX139,굴삭기,유럽,105,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
+예시고객사 D,EX140,지게차,유럽,80,예시 ATS-B,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-2
+예시고객사 D,EX141,지게차,유럽,50,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-A,CAN,예시 X-1
+예시고객사 D,EX142,굴삭기,유럽,105,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
+예시고객사 D,EX143,지게차,유럽,60,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-2
+예시고객사 D,EX144,지게차,유럽,50,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
+예시고객사 D,EX145,굴삭기,유럽,180,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 D,EX146,지게차,유럽,80,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-2
+예시고객사 D,EX147,지게차,유럽,40,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-B,CAN type,예시 X-1
+예시고객사 D,EX148,굴삭기,유럽,90,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
+예시고객사 E,EX149,발전기,미국,260,예시 ATS-A,예시 SA-2,,예시 Starter-A,HW type,예시 X-2
+예시고객사 E,EX150,발전기,미국,300,예시 ATS-C,예시 SA-1,,예시 Starter-B,hw type,예시 X-1
+예시고객사 E,EX151,지게차,미국,40,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
+예시고객사 E,EX152,발전기,미국,260,예시 ATS-A,예시 SA-1,,예시 Starter-B,CAN type,예시 X-2
+예시고객사 E,EX153,발전기,미국,300,예시 ATS-B,예시 SA-2,,예시 Starter-B,HW type,예시 X-1
+예시고객사 E,EX154,지게차,미국,40,예시 ATS-C,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
+예시고객사 E,EX155,발전기,미국,280,예시 ATS-A,예시 SA-1,,예시 Starter-A,HW type,예시 X-2
+예시고객사 E,EX156,발전기,미국,360,예시 ATS-B,예시 SA-2,예시 Pedal-C,예시 Starter-B,HW type,예시 X-1
+예시고객사 E,EX157,지게차,미국,80,예시 ATS-B,예시 SA-2,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
+예시고객사 E,EX158,발전기,미국,360,예시 ATS-B,예시 SA-1,,예시 Starter-B,HW type,예시 X-2
+예시고객사 E,EX159,발전기,미국,340,예시 ATS-A,예시 SA-2,,예시 Starter-B,hw type,예시 X-1
+예시고객사 E,EX160,지게차,미국,80,예시 ATS-B,예시 SA-1,예시 Pedal-B,예시 Starter-B,HW type,예시 X-1
+예시고객사 F,EX161,굴삭기,미국,90,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 F,EX162,굴삭기,미국,90,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
+예시고객사 F,EX163,지게차,미국,50,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-B,HW type,예시 X-1
+예시고객사 F,EX164,굴삭기,미국,90,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-B,HW type,예시 X-2
+예시고객사 F,EX165,굴삭기,미국,180,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
+예시고객사 F,EX166,지게차,미국,70,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
+예시고객사 F,EX167,굴삭기,미국,120,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-A,HW type,예시 X-2
+예시고객사 F,EX168,굴삭기,미국,90,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,hw type,예시 X-1
+예시고객사 F,EX169,지게차,미국,70,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
+예시고객사 F,EX170,굴삭기,미국,135,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
+예시고객사 F,EX171,굴삭기,미국,165,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
+예시고객사 F,EX172,지게차,미국,60,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
