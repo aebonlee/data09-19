@@ -67,6 +67,7 @@
 - [패들릿 제출 원문](docs/source/패들릿_제출_원문.md)
 - [2026-09-29 옵션 항목 구체화 원문](docs/source/2026-09-29_패들릿_추가요청.md)
 - [개발일지](docs/개발일지.md)
+- [DB 스크립트 (Supabase)](supabase/README.md) — 브라우저 저장 대신 DB 를 쓸 때. 수강생 본인 Supabase 프로젝트에 적용
 
 ## 제출 자료 (`docs/source/`)
 
