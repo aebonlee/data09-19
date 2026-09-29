@@ -12,9 +12,10 @@
 --  본인 프로젝트에 올리는 것을 전제로 하므로 테이블 이름에 접두사를 붙이지 않았습니다.
 --  회사 공용 URL·키는 어디에도 들어 있지 않습니다.
 --
---  테이블 (5개)
---    catalog_field   — 옵션 카탈로그의 항목 (고객사·engine suffix·장비 유형 … / ATS type·CAN SA …)
+--  테이블 (6개)
+--    catalog_field   — 옵션 카탈로그의 항목 (고객사·engine suffix·Machine type … / ATS type·CAN1(J1939) baudrate …)
 --    catalog_choice  — 항목별 선택지 (예: check engine lamp → CAN type / HW type)
+--    catalog_rule    — 적용 조건: 「옵션 X 는 항목 Y 가 이 선택지일 때만 쓴다」 (2026-09-29 추가)
 --    option_record   — 고객사×장비 1건 (항목 id → 값)
 --    column_mapping  — 엑셀 열 이름 ↔ 카탈로그 항목 연결 (다음 가져오기에 재사용)
 --    change_log      — 카탈로그·레코드 변경 기록 — 기록성, 수정·삭제 불가 (트리거가 자동 기록)
@@ -71,6 +72,23 @@ create table if not exists public.catalog_choice (
 create unique index if not exists catalog_choice_label_norm_key
   on public.catalog_choice (field_id, (regexp_replace(lower(btrim(label)), '[\s_\-.·/]+', '', 'g')));
 
+-- 적용 조건 (catalog.rules[] = { id, target, when, in: [선택지 id…] }) — 2026-09-29 추가
+--   항목·선택지는 도구의 키(field_key·choice_key)로 가리킨다. 도구 규칙(addRule)과 같은 제약을 건다.
+create table if not exists public.catalog_rule (
+  id           bigint generated always as identity primary key,
+  owner_id     uuid not null default auth.uid(),
+  rule_key     text not null check (rule_key ~ '^rule[0-9]+$'),         -- 'rule1', 'rule2' …
+  target_key   text not null check (target_key ~ '^f[a-z0-9_]*$'),      -- 옵션 항목
+  when_key     text not null check (when_key ~ '^f[a-z0-9_]*$'),        -- 선택 목록 항목
+  choice_keys  text[] not null check (cardinality(choice_keys) > 0),     -- 이 선택지일 때만 씀
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  constraint catalog_rule_not_self check (target_key <> when_key),       -- rule_self
+  -- ⚠ upsert 시 onConflict: 'owner_id,rule_key'
+  constraint catalog_rule_owner_key unique (owner_id, rule_key),
+  constraint catalog_rule_pair_key unique (owner_id, target_key, when_key) -- rule_duplicate
+);
+
 -- 레코드 (records[] = { id, v: { 필드id: 값 } }) — select 는 선택지 id, text 는 글자, number 는 숫자
 --   항목이 담당자 손으로 늘어나므로 값은 jsonb 한 칸에 둔다(열을 고정하면 항목을 늘릴 때마다 DDL 이 필요하다).
 create table if not exists public.option_record (
@@ -101,7 +119,7 @@ create table if not exists public.column_mapping (
 create table if not exists public.change_log (
   id          bigint generated always as identity primary key,
   owner_id    uuid not null default auth.uid(),
-  table_name  text not null check (table_name in ('catalog_field', 'catalog_choice', 'option_record')),
+  table_name  text not null,                  -- 허용 값은 아래 change_log_table_name 제약
   row_key     text not null,                  -- field_key / choice_key / record_key
   op          text not null check (op in ('insert', 'update', 'delete')),
   before      jsonb,
@@ -109,6 +127,12 @@ create table if not exists public.change_log (
   changed_at  timestamptz not null default now()
 );
 create index if not exists change_log_idx on public.change_log (owner_id, changed_at desc);
+-- 기록 대상 표 목록 — catalog_rule 이 늘어 제약을 다시 건다(재실행 안전).
+-- 첫 판이 표 정의 안에 둔 이름 없는 check(change_log_table_name_check)도 함께 지운다.
+alter table public.change_log drop constraint if exists change_log_table_name_check;
+alter table public.change_log drop constraint if exists change_log_table_name;
+alter table public.change_log add constraint change_log_table_name
+  check (table_name in ('catalog_field', 'catalog_choice', 'catalog_rule', 'option_record'));
 
 -- ----------------------------------------------------------------------------
 -- 2. 함수 — search_path 고정
@@ -128,7 +152,7 @@ create or replace function public.log_change()
 returns trigger language plpgsql set search_path = public as $fn$
 declare
   v_row  jsonb := case when tg_op = 'DELETE' then to_jsonb(old) else to_jsonb(new) end;
-  v_key  text  := coalesce(v_row->>'field_key', v_row->>'choice_key', v_row->>'record_key');
+  v_key  text  := coalesce(v_row->>'field_key', v_row->>'choice_key', v_row->>'rule_key', v_row->>'record_key');
 begin
   insert into public.change_log (owner_id, table_name, row_key, op, before, after)
   values ((v_row->>'owner_id')::uuid, tg_table_name, v_key, lower(tg_op),
@@ -141,13 +165,13 @@ $fn$;
 do $trg$
 declare t text;
 begin
-  foreach t in array array['catalog_field', 'catalog_choice', 'option_record', 'column_mapping']
+  foreach t in array array['catalog_field', 'catalog_choice', 'catalog_rule', 'option_record', 'column_mapping']
   loop
     execute format('drop trigger if exists %I on public.%I', t || '_updated_at', t);
     execute format('create trigger %I before update on public.%I for each row execute function public.set_updated_at()',
                    t || '_updated_at', t);
   end loop;
-  foreach t in array array['catalog_field', 'catalog_choice', 'option_record']
+  foreach t in array array['catalog_field', 'catalog_choice', 'catalog_rule', 'option_record']
   loop
     execute format('drop trigger if exists %I on public.%I', t || '_change', t);
     execute format('create trigger %I after insert or update or delete on public.%I for each row execute function public.log_change()',
@@ -162,6 +186,7 @@ $trg$;
 
 alter table public.catalog_field  enable row level security;
 alter table public.catalog_choice enable row level security;
+alter table public.catalog_rule   enable row level security;
 alter table public.option_record  enable row level security;
 alter table public.column_mapping enable row level security;
 alter table public.change_log     enable row level security;
@@ -169,7 +194,7 @@ alter table public.change_log     enable row level security;
 do $rls$
 declare t text;
 begin
-  foreach t in array array['catalog_field', 'option_record', 'column_mapping']
+  foreach t in array array['catalog_field', 'catalog_rule', 'option_record', 'column_mapping']
   loop
     execute format('drop policy if exists %I on public.%I', t || '_select', t);
     execute format('drop policy if exists %I on public.%I', t || '_insert', t);

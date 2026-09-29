@@ -1,73 +1,97 @@
-﻿Customer,Engine Suffix,Equipment,Region,Power,ATS type,CAN SA,Pedal type,starter control type,check engine lamp,예시 옵션 X
-예시고객사 A,EX101,굴삭기,한국,180,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 A,EX102,굴삭기,한국,165,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
-예시고객사 A,EX103,지게차,한국,70,예시 ATS-B,예시 SA-2,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
-예시고객사 A,EX104,굴삭기,한국,150,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 A,EX105,굴삭기,한국,180,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN,예시 X-1
-예시고객사 A,EX106,지게차,한국,40,예시 ATS-B,예시 SA-1,예시 Pedal-C,예시 Starter-B,HW type,예시 X-1
-예시고객사 A,EX107,굴삭기,한국,195,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-2
-예시고객사 A,EX108,굴삭기,한국,150,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 A,EX109,지게차,한국,50,예시 ATS-C,예시 SA-2,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
-예시고객사 A,EX110,굴삭기,한국,165,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 A,EX111,굴삭기,한국,180,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 A,EX112,지게차,한국,70,예시 ATS-C,예시 SA-2,예시 Pedal-B,예시 Starter-B,CAN type,예시 X-1
-예시고객사 B,EX113,발전기,한국,300,예시 ATS-B,예시 SA-2,예시 Pedal-C,예시 Starter-B,CAN type,예시 X-2
-예시고객사 B,EX114,발전기,한국,260,예시 ATS-B,예시 SA-2,,예시 Starter-A,CAN,예시 X-1
-예시고객사 B,EX115,굴삭기,한국,135,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 B,EX116,발전기,한국,200,예시 ATS-C,예시 SA-1,,예시 Starter-B,CAN type,예시 X-2
-예시고객사 B,EX117,발전기,한국,300,예시 ATS-B,예시 SA-2,,예시 Starter-A,HW type,예시 X-1
-예시고객사 B,EX118,굴삭기,한국,165,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 B,EX119,발전기,한국,300,예시 ATS-A,예시 SA-1,,예시 Starter-B,CAN type,예시 X-2
-예시고객사 B,EX120,발전기,한국,320,예시 ATS-B,예시 SA-1,,예시 Starter-B,CAN type,예시 X-1
-예시고객사 B,EX121,굴삭기,한국,165,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
-예시고객사 B,EX122,발전기,한국,320,예시 ATS-C,예시 SA-2,,예시 Starter-B,HW type,예시 X-2
-예시고객사 B,EX123,발전기,한국,280,예시 ATS-A,예시 SA-1,,예시 Starter-A,hw type,예시 X-1
-예시고객사 B,EX124,굴삭기,한국,180,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
-예시고객사 C,EX125,굴삭기,유럽,90,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 C,EX126,굴삭기,유럽,120,예시 ATS-B,예시 SA-2,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
-예시고객사 C,EX127,발전기,유럽,220,예시 ATS-A,예시 SA-1,,예시 Starter-A,CAN type,예시 X-1
-예시고객사 C,EX128,굴삭기,유럽,180,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 C,EX129,굴삭기,유럽,120,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 C,EX130,발전기,유럽,340,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-B,HW type,예시 X-1
-예시고객사 C,EX131,굴삭기,유럽,135,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 C,EX132,굴삭기,유럽,195,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN,예시 X-1
-예시고객사 C,EX133,발전기,유럽,360,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
-예시고객사 C,EX134,굴삭기,유럽,90,예시 ATS-A,예시 SA-2,예시 Pedal-C,예시 Starter-B,HW type,예시 X-2
-예시고객사 C,EX135,굴삭기,유럽,105,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-1
-예시고객사 C,EX136,발전기,유럽,380,예시 ATS-A,예시 SA-2,,예시 Starter-A,HW type,예시 X-1
-예시고객사 D,EX137,지게차,유럽,50,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-2
-예시고객사 D,EX138,지게차,유럽,90,예시 ATS-B,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-1
-예시고객사 D,EX139,굴삭기,유럽,105,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
-예시고객사 D,EX140,지게차,유럽,80,예시 ATS-B,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-2
-예시고객사 D,EX141,지게차,유럽,50,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-A,CAN,예시 X-1
-예시고객사 D,EX142,굴삭기,유럽,105,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
-예시고객사 D,EX143,지게차,유럽,60,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-2
-예시고객사 D,EX144,지게차,유럽,50,예시 ATS-A,예시 SA-1,예시 Pedal-C,예시 Starter-A,CAN type,예시 X-1
-예시고객사 D,EX145,굴삭기,유럽,180,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 D,EX146,지게차,유럽,80,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,CAN type,예시 X-2
-예시고객사 D,EX147,지게차,유럽,40,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-B,CAN type,예시 X-1
-예시고객사 D,EX148,굴삭기,유럽,90,예시 ATS-A,예시 SA-2,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-1
-예시고객사 E,EX149,발전기,미국,260,예시 ATS-A,예시 SA-2,,예시 Starter-A,HW type,예시 X-2
-예시고객사 E,EX150,발전기,미국,300,예시 ATS-C,예시 SA-1,,예시 Starter-B,hw type,예시 X-1
-예시고객사 E,EX151,지게차,미국,40,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
-예시고객사 E,EX152,발전기,미국,260,예시 ATS-A,예시 SA-1,,예시 Starter-B,CAN type,예시 X-2
-예시고객사 E,EX153,발전기,미국,300,예시 ATS-B,예시 SA-2,,예시 Starter-B,HW type,예시 X-1
-예시고객사 E,EX154,지게차,미국,40,예시 ATS-C,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
-예시고객사 E,EX155,발전기,미국,280,예시 ATS-A,예시 SA-1,,예시 Starter-A,HW type,예시 X-2
-예시고객사 E,EX156,발전기,미국,360,예시 ATS-B,예시 SA-2,예시 Pedal-C,예시 Starter-B,HW type,예시 X-1
-예시고객사 E,EX157,지게차,미국,80,예시 ATS-B,예시 SA-2,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
-예시고객사 E,EX158,발전기,미국,360,예시 ATS-B,예시 SA-1,,예시 Starter-B,HW type,예시 X-2
-예시고객사 E,EX159,발전기,미국,340,예시 ATS-A,예시 SA-2,,예시 Starter-B,hw type,예시 X-1
-예시고객사 E,EX160,지게차,미국,80,예시 ATS-B,예시 SA-1,예시 Pedal-B,예시 Starter-B,HW type,예시 X-1
-예시고객사 F,EX161,굴삭기,미국,90,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 F,EX162,굴삭기,미국,90,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
-예시고객사 F,EX163,지게차,미국,50,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-B,HW type,예시 X-1
-예시고객사 F,EX164,굴삭기,미국,90,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-B,HW type,예시 X-2
-예시고객사 F,EX165,굴삭기,미국,180,예시 ATS-C,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
-예시고객사 F,EX166,지게차,미국,70,예시 ATS-A,예시 SA-1,예시 Pedal-A,예시 Starter-A,HW type,예시 X-1
-예시고객사 F,EX167,굴삭기,미국,120,예시 ATS-C,예시 SA-2,예시 Pedal-A,예시 Starter-A,HW type,예시 X-2
-예시고객사 F,EX168,굴삭기,미국,90,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,hw type,예시 X-1
-예시고객사 F,EX169,지게차,미국,70,예시 ATS-A,예시 SA-2,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
-예시고객사 F,EX170,굴삭기,미국,135,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-A,CAN type,예시 X-2
-예시고객사 F,EX171,굴삭기,미국,165,예시 ATS-B,예시 SA-1,예시 Pedal-A,예시 Starter-B,HW type,예시 X-1
-예시고객사 F,EX172,지게차,미국,60,예시 ATS-A,예시 SA-1,예시 Pedal-B,예시 Starter-A,HW type,예시 X-1
+﻿Customer,Engine Suffix,Equipment,Emission,Power,ATS type,CAN1(J1939) baudrate,Accelerator type,starter control type,check engine lamp,Parking Brake,SAC lamp,Emergency stop,Oil pressure lamp,Regeneration demand switch,Regeneration inhibit switch,WIF,Electric feed pump,예시 옵션 X
+예시고객사 A,EX101,Excavator,Korea Stage5,150,DOC+DPF,250kb,CAN (EEC2),VCU control,CAN type,CAN (SMVCU),CAN,Hardwire,,CAN,Hardwire,VCU,VCU,예시 X-2
+예시고객사 A,EX102,Excavator,Korea Stage5,195,DOC+DPF,250kb,CAN (SMVCU),VCU control,CAN type,CAN (SMVCU),CAN,Hardwire,,Hardwire,CAN,ECU,ECU,예시 X-1
+예시고객사 A,EX103,Forklift,Korea Stage5,80,DOC+DPF,250kb,CAN (EEC2),ECU control,CAN type,Hardwire (Normally open),CAN,CAN,,CAN,CAN,ECU,VCU,예시 X-1
+예시고객사 A,EX104,Excavator,Korea Stage5,105,DOC+DPF,500kb,CAN (SMVCU),ECU control,CAN type,CAN (SMVCU),CAN,CAN,,CAN,Hardwire,ECU,VCU,예시 X-2
+예시고객사 A,EX105,Excavator,Korea Stage5,180,DOC,500kb,CAN (SMVCU),VCU control,hw type,CAN (SMVCU),CAN,Hardwire,,,,VCU,VCU,예시 X-1
+예시고객사 A,EX106,Forklift,Korea Stage5,40,DOC+DPF,250kb,Hardwire Foot,VCU control,CAN type,Hardwire (Normally closed),Hardwire,CAN,,CAN,Hardwire,VCU,ECU,예시 X-1
+예시고객사 A,EX107,Excavator,Korea Stage5,120,DOC+DPF,250kb,CAN (SMVCU),VCU control,CAN type,CAN (SMVCU),CAN,CAN,,CAN,Hardwire,VCU,ECU,예시 X-2
+예시고객사 A,EX108,Excavator,Korea Stage5,120,DOC+DPF,250kb,CAN (SMVCU),ECU control,CAN type,CAN (SMVCU),CAN,Hardwire,,Hardwire,Hardwire,VCU,ECU,예시 X-1
+예시고객사 A,EX109,Forklift,Korea Stage5,90,DOC+DPF,250kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally closed),CAN,CAN,,CAN,CAN,ECU,VCU,예시 X-1
+예시고객사 A,EX110,Excavator,Korea Stage5,180,DOC_SDPF,500kb,CAN (EEC2),VCU control,CAN type,CAN (SMVCU),CAN,CAN,,CAN,CAN,VCU,VCU,예시 X-2
+예시고객사 A,EX111,Excavator,Korea Stage5,120,DOC+DPF,250kb,CAN (EEC2),ECU control,CAN type,CAN (SMVCU),CAN,Hardwire,,CAN,CAN,ECU,VCU,예시 X-1
+예시고객사 A,EX112,Forklift,Korea Stage5,80,DOC+DPF,250kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally closed),CAN,CAN,,Hardwire,Hardwire,ECU,VCU,예시 X-1
+예시고객사 B,EX113,Generator,Korea Stage5,240,DOC_SDPF,250kb,Hardwire Foot and Hand,ECU control,HW type,,CAN,Hardwire,,CAN,Hardwire,ECU,ECU,예시 X-2
+예시고객사 B,EX114,Generator,Korea Stage5,220,DOC_SDPF,250kb,CAN (TSC1),ECU control,CAN,,Hardwire,Hardwire,,Hardwire,CAN,VCU,VCU,예시 X-1
+예시고객사 B,EX115,Loader,Korea Stage5,95,DOC_SDPF,250kb,Hardwire Foot and Hand,VCU control,CAN type,CAN (CCVS),Hardwire,CAN,,Hardwire,Hardwire,VCU,ECU,예시 X-1
+예시고객사 B,EX116,Generator,Korea Stage5,340,DOC+DPF,500kb,CAN (TSC1),ECU control,HW type,,CAN,Hardwire,,CAN,CAN,VCU,VCU,예시 X-2
+예시고객사 B,EX117,Generator,Korea Stage5,320,DOC+DPF,250kb,CAN (TSC1),ECU control,CAN type,,CAN,CAN,,Hardwire,Hardwire,ECU,VCU,예시 X-1
+예시고객사 B,EX118,Loader,Korea Stage5,105,DOC+DPF,250kb,Hardwire Foot and Hand,VCU control,CAN type,Hardwire (Normally closed),CAN,CAN,,CAN,Hardwire,ECU,VCU,예시 X-1
+예시고객사 B,EX119,Generator,Korea Stage5,340,DOC+DPF,250kb,CAN (TSC1),ECU control,CAN type,,CAN,Hardwire,,CAN,CAN,ECU,VCU,예시 X-2
+예시고객사 B,EX120,Generator,Korea Stage5,360,DOC_SDPF,250kb,CAN (TSC1),ECU control,CAN type,,CAN,CAN,,CAN,CAN,ECU,ECU,예시 X-1
+예시고객사 B,EX121,Loader,Korea Stage5,125,DOC+DPF,250kb,Hardwire Foot and Hand,VCU control,HW type,Hardwire (Normally closed),CAN,CAN,,CAN,CAN,VCU,ECU,예시 X-1
+예시고객사 B,EX122,Generator,Korea Stage5,280,DOC+DPF,250kb,CAN (TSC1),ECU control,HW type,,CAN,Hardwire,,CAN,CAN,ECU,VCU,예시 X-2
+예시고객사 B,EX123,Generator,Korea Stage5,380,DOC+DPF,250kb,CAN (TSC1),ECU control,CAN,,CAN,Hardwire,,Hardwire,CAN,ECU,VCU,예시 X-1
+예시고객사 B,EX124,Loader,Korea Stage5,105,DOC,500kb,Hardwire Foot and Hand,VCU control,HW type,Hardwire (Normally closed),CAN,CAN,,,,VCU,VCU,예시 X-1
+예시고객사 C,EX125,Excavator,EU Stage5,90,DOC,500kb,Hardwire Foot,VCU control,CAN type,CAN (SMVCU),CAN,CAN,,,,ECU,ECU,예시 X-2
+예시고객사 C,EX126,Excavator,EU Stage5,135,DOC+DPF,250kb,CAN (SMVCU),VCU control,CAN type,CAN (CCVS),CAN,CAN,,Hardwire,CAN,ECU,VCU,예시 X-1
+예시고객사 C,EX127,TLS,EU Stage5,75,DOC+DPF,500kb,CAN (EEC2),VCU control,CAN type,Hardwire (Normally closed),CAN,CAN,,CAN,Hardwire,ECU,VCU,예시 X-1
+예시고객사 C,EX128,Excavator,EU Stage5,105,DOC+DPF,500kb,CAN (SMVCU),VCU control,CAN type,CAN (SMVCU),CAN,Hardwire,,CAN,CAN,VCU,ECU,예시 X-2
+예시고객사 C,EX129,Excavator,EU Stage5,135,DOC_SDPF,500kb,CAN (SMVCU),ECU control,CAN type,CAN (SMVCU),CAN,Hardwire,,CAN,Hardwire,VCU,ECU,예시 X-1
+예시고객사 C,EX130,TLS,EU Stage5,115,DOC_SDPF,500kb,CAN (EEC2),VCU control,HW type,Hardwire (Normally closed),CAN,Hardwire,,CAN,Hardwire,VCU,VCU,예시 X-1
+예시고객사 C,EX131,Excavator,EU Stage5,90,DOC_SDPF,500kb,CAN (SMVCU),VCU control,CAN type,CAN (SMVCU),CAN,Hardwire,,CAN,CAN,VCU,ECU,예시 X-2
+예시고객사 C,EX132,Excavator,EU Stage5,135,DOC_SDPF,500kb,CAN (EEC2),VCU control,hw type,CAN (SMVCU),Hardwire,Hardwire,,Hardwire,Hardwire,VCU,ECU,예시 X-1
+예시고객사 C,EX133,TLS,EU Stage5,75,DOC+DPF,250kb,CAN (SMVCU),VCU control,CAN type,CAN (CCVS),CAN,CAN,,CAN,CAN,VCU,ECU,예시 X-1
+예시고객사 C,EX134,Excavator,EU Stage5,90,DOC+DPF,250kb,CAN (SMVCU),VCU control,CAN type,CAN (SMVCU),CAN,Hardwire,,Hardwire,CAN,ECU,ECU,예시 X-2
+예시고객사 C,EX135,Excavator,EU Stage5,150,DOC_SDPF,500kb,CAN (SMVCU),ECU control,CAN type,CAN (SMVCU),CAN,CAN,,CAN,CAN,VCU,ECU,예시 X-1
+예시고객사 C,EX136,TLS,EU Stage5,95,DOC_SDPF,500kb,CAN (EEC2),ECU control,HW type,CAN (CCVS),CAN,CAN,,CAN,Hardwire,VCU,ECU,예시 X-1
+예시고객사 D,EX137,Forklift,EU Stage5,60,DOC+DPF,500kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally open),CAN,Hardwire,,Hardwire,Hardwire,VCU,VCU,예시 X-2
+예시고객사 D,EX138,Forklift,EU Stage5,90,DOC_SDPF,500kb,Hardwire Foot,VCU control,CAN type,Hardwire (Normally closed),Hardwire,Hardwire,,CAN,Hardwire,VCU,VCU,예시 X-1
+예시고객사 D,EX139,Generator,EU Stage5,340,DOC+DPF,500kb,CAN (TSC1),ECU control,HW type,,CAN,Hardwire,,Hardwire,Hardwire,ECU,VCU,예시 X-1
+예시고객사 D,EX140,Forklift,EU Stage5,90,DOC_SDPF,500kb,Hardwire Foot,VCU control,CAN type,Hardwire (Normally closed),CAN,CAN,,CAN,CAN,ECU,VCU,예시 X-2
+예시고객사 D,EX141,Forklift,EU Stage5,50,DOC+DPF,500kb,Hardwire Foot,VCU control,hw type,Hardwire (Normally closed),Hardwire,CAN,,CAN,CAN,VCU,ECU,예시 X-1
+예시고객사 D,EX142,Generator,EU Stage5,360,DOC_SDPF,500kb,CAN (TSC1),ECU control,CAN type,,CAN,Hardwire,,CAN,CAN,ECU,VCU,예시 X-1
+예시고객사 D,EX143,Forklift,EU Stage5,70,DOC_SDPF,500kb,Hardwire Foot,VCU control,CAN type,Hardwire (Normally open),CAN,Hardwire,,Hardwire,Hardwire,VCU,ECU,예시 X-2
+예시고객사 D,EX144,Forklift,EU Stage5,80,DOC_SDPF,500kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally closed),CAN,CAN,,CAN,CAN,ECU,VCU,예시 X-1
+예시고객사 D,EX145,Generator,EU Stage5,260,DOC_SDPF,500kb,CAN (TSC1),ECU control,HW type,,Hardwire,Hardwire,,Hardwire,CAN,ECU,ECU,예시 X-1
+예시고객사 D,EX146,Forklift,EU Stage5,70,DOC_SDPF,500kb,Hardwire Foot,VCU control,CAN type,CAN (CCVS),CAN,CAN,,CAN,CAN,ECU,VCU,예시 X-2
+예시고객사 D,EX147,Forklift,EU Stage5,70,DOC+DPF,500kb,Hardwire Foot,ECU control,CAN type,Hardwire (Normally open),CAN,CAN,,Hardwire,Hardwire,ECU,ECU,예시 X-1
+예시고객사 D,EX148,Generator,EU Stage5,300,DOC_SDPF,500kb,CAN (TSC1),ECU control,CAN type,,CAN,Hardwire,,CAN,CAN,VCU,ECU,예시 X-1
+예시고객사 E,EX149,Generator,NA Tier4f,300,DOC+DPF,250kb,CAN (TSC1),ECU control,CAN type,,CAN,Hardwire,,CAN,CAN,ECU,ECU,예시 X-2
+예시고객사 E,EX150,Generator,NA Tier4f,200,DOC+DPF,250kb,CAN (TSC1),ECU control,hw type,,CAN,Hardwire,,Hardwire,CAN,ECU,ECU,예시 X-1
+예시고객사 E,EX151,TLS,NA Tier4f,125,DOC+DPF,250kb,CAN (EEC2),VCU control,CAN type,CAN (CCVS),CAN,CAN,,Hardwire,CAN,VCU,VCU,예시 X-1
+예시고객사 E,EX152,Generator,NA Tier4f,360,DOC+DPF,250kb,Hardwire Foot and Hand,ECU control,CAN type,,CAN,Hardwire,,CAN,Hardwire,VCU,ECU,예시 X-2
+예시고객사 E,EX153,Generator,NA Tier4f,260,DOC+DPF,500kb,CAN (TSC1),ECU control,CAN type,,CAN,CAN,,Hardwire,CAN,ECU,VCU,예시 X-1
+예시고객사 E,EX154,TLS,NA Tier4f,85,DOC+DPF,500kb,CAN (EEC2),VCU control,CAN type,Hardwire (Normally closed),CAN,Hardwire,,CAN,Hardwire,ECU,ECU,예시 X-1
+예시고객사 E,EX155,Generator,NA Tier4f,320,DOC+DPF,250kb,Hardwire Foot and Hand,ECU control,CAN type,,CAN,Hardwire,,CAN,CAN,ECU,VCU,예시 X-2
+예시고객사 E,EX156,Generator,NA Tier4f,360,DOC_SDPF,250kb,CAN (TSC1),ECU control,CAN type,,Hardwire,Hardwire,,CAN,CAN,ECU,VCU,예시 X-1
+예시고객사 E,EX157,TLS,NA Tier4f,95,DOC+DPF,250kb,CAN (EEC2),VCU control,CAN type,CAN (CCVS),Hardwire,CAN,,CAN,CAN,ECU,ECU,예시 X-1
+예시고객사 E,EX158,Generator,NA Tier4f,200,DOC+DPF,250kb,CAN (TSC1),ECU control,CAN type,,CAN,Hardwire,,CAN,CAN,ECU,ECU,예시 X-2
+예시고객사 E,EX159,Generator,NA Tier4f,380,DOC+DPF,250kb,CAN (TSC1),VCU control,CAN,,CAN,Hardwire,,CAN,Hardwire,ECU,ECU,예시 X-1
+예시고객사 E,EX160,TLS,NA Tier4f,75,DOC+DPF,250kb,CAN (EEC2),VCU control,HW type,Hardwire (Normally closed),CAN,Hardwire,,CAN,Hardwire,ECU,VCU,예시 X-1
+예시고객사 F,EX161,Excavator,NA Tier4f,165,DOC+DPF,250kb,CAN (SMVCU),ECU control,HW type,CAN (SMVCU),CAN,Hardwire,,Hardwire,Hardwire,ECU,ECU,예시 X-2
+예시고객사 F,EX162,Excavator,NA Tier4f,150,DOC+DPF,250kb,CAN (SMVCU),VCU control,HW type,CAN (CCVS),CAN,CAN,,Hardwire,Hardwire,ECU,VCU,예시 X-1
+예시고객사 F,EX163,Loader,NA Tier4f,95,DOC,250kb,CAN (EEC2),VCU control,HW type,Hardwire (Normally closed),CAN,CAN,,,,VCU,VCU,예시 X-1
+예시고객사 F,EX164,Excavator,NA Tier4f,165,DOC_SDPF,250kb,CAN (EEC2),ECU control,CAN type,CAN (CCVS),Hardwire,Hardwire,,CAN,Hardwire,ECU,ECU,예시 X-2
+예시고객사 F,EX165,Excavator,NA Tier4f,90,DOC+DPF,250kb,CAN (SMVCU),VCU control,CAN type,CAN (SMVCU),CAN,Hardwire,,CAN,Hardwire,ECU,VCU,예시 X-1
+예시고객사 F,EX166,Loader,NA Tier4f,85,DOC+DPF,500kb,CAN (EEC2),VCU control,CAN type,Hardwire (Normally closed),Hardwire,Hardwire,,Hardwire,Hardwire,VCU,ECU,예시 X-1
+예시고객사 F,EX167,Excavator,NA Tier4f,90,DOC_SDPF,250kb,CAN (SMVCU),ECU control,CAN type,CAN (SMVCU),CAN,CAN,,CAN,Hardwire,ECU,ECU,예시 X-2
+예시고객사 F,EX168,Excavator,NA Tier4f,150,DOC_SDPF,250kb,CAN (EEC2),VCU control,hw type,CAN (CCVS),CAN,CAN,,Hardwire,Hardwire,VCU,VCU,예시 X-1
+예시고객사 F,EX169,Loader,NA Tier4f,85,DOC_SDPF,500kb,Hardwire Foot and Hand,VCU control,CAN type,CAN (CCVS),CAN,CAN,,CAN,Hardwire,VCU,VCU,예시 X-1
+예시고객사 F,EX170,Excavator,NA Tier4f,165,DOC+DPF,500kb,CAN (EEC2),ECU control,CAN type,CAN (SMVCU),CAN,Hardwire,,Hardwire,CAN,VCU,ECU,예시 X-2
+예시고객사 F,EX171,Excavator,NA Tier4f,105,DOC+DPF,250kb,Hardwire Foot,VCU control,CAN type,CAN (CCVS),CAN,CAN,,Hardwire,CAN,VCU,VCU,예시 X-1
+예시고객사 F,EX172,Loader,NA Tier4f,105,DOC_SDPF,250kb,Hardwire Foot and Hand,VCU control,HW type,Hardwire (Normally closed),CAN,Hardwire,,CAN,CAN,VCU,VCU,예시 X-1
+예시고객사 G,EX173,Excavator,EU Stage3A,165,DOC,250kb,CAN (SMVCU),VCU control,HW type,CAN (SMVCU),Hardwire,CAN,,,,VCU,VCU,예시 X-2
+예시고객사 G,EX174,Excavator,EU Stage3A,135,DOC,500kb,CAN (SMVCU),VCU control,HW type,CAN (SMVCU),Hardwire,CAN,,,,ECU,VCU,예시 X-1
+예시고객사 G,EX175,Generator,EU Stage3A,260,DOC,500kb,CAN (TSC1),ECU control,CAN type,,Hardwire,Hardwire,,,,ECU,VCU,예시 X-1
+예시고객사 G,EX176,Excavator,EU Stage3A,105,Muffler,500kb,CAN (SMVCU),VCU control,HW type,CAN (SMVCU),Hardwire,CAN,,,,VCU,ECU,예시 X-2
+예시고객사 G,EX177,Excavator,EU Stage3A,180,DOC,500kb,CAN (EEC2),ECU control,CAN,CAN (SMVCU),Hardwire,CAN,,,,ECU,VCU,예시 X-1
+예시고객사 G,EX178,Generator,EU Stage3A,340,DOC,500kb,CAN (TSC1),VCU control,HW type,,CAN,Hardwire,,,,ECU,ECU,예시 X-1
+예시고객사 G,EX179,Excavator,EU Stage3A,135,DOC,500kb,CAN (SMVCU),VCU control,HW type,CAN (CCVS),Hardwire,Hardwire,,,,ECU,ECU,예시 X-2
+예시고객사 G,EX180,Excavator,EU Stage3A,180,DOC,250kb,CAN (EEC2),VCU control,HW type,CAN (SMVCU),Hardwire,CAN,,,,ECU,VCU,예시 X-1
+예시고객사 G,EX181,Generator,EU Stage3A,240,Muffler,500kb,Hardwire Foot and Hand,ECU control,HW type,,Hardwire,CAN,,,,VCU,ECU,예시 X-1
+예시고객사 G,EX182,Excavator,EU Stage3A,135,DOC,500kb,CAN (SMVCU),ECU control,HW type,CAN (CCVS),Hardwire,Hardwire,,,,VCU,VCU,예시 X-2
+예시고객사 G,EX183,Excavator,EU Stage3A,105,DOC+DPF,500kb,CAN (SMVCU),VCU control,HW type,CAN (SMVCU),CAN,Hardwire,,Hardwire,CAN,ECU,VCU,예시 X-1
+예시고객사 G,EX184,Generator,EU Stage3A,320,DOC+DPF,500kb,CAN (TSC1),VCU control,HW type,,CAN,Hardwire,,CAN,Hardwire,ECU,VCU,예시 X-1
+예시고객사 H,EX185,Forklift,Unregulated,70,DOC,250kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally closed),Hardwire,Hardwire,,,,ECU,VCU,예시 X-2
+예시고객사 H,EX186,Forklift,Unregulated,80,Muffler,500kb,Hardwire Foot,ECU control,hw type,Hardwire (Normally closed),Hardwire,CAN,,,,VCU,ECU,예시 X-1
+예시고객사 H,EX187,Generator,Unregulated,360,Muffler,250kb,Hardwire Foot and Hand,VCU control,HW type,,Hardwire,Hardwire,,,,ECU,VCU,예시 X-1
+예시고객사 H,EX188,Forklift,Unregulated,80,Muffler,250kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally open),Hardwire,CAN,,,,VCU,VCU,예시 X-2
+예시고객사 H,EX189,Forklift,Unregulated,80,Muffler,250kb,CAN (EEC2),ECU control,HW type,CAN (CCVS),Hardwire,Hardwire,,,,VCU,ECU,예시 X-1
+예시고객사 H,EX190,Generator,Unregulated,220,Muffler,250kb,CAN (TSC1),VCU control,HW type,,Hardwire,Hardwire,,,,ECU,VCU,예시 X-1
+예시고객사 H,EX191,Forklift,Unregulated,60,Muffler,250kb,Hardwire Foot,ECU control,HW type,Hardwire (Normally open),CAN,Hardwire,,,,VCU,ECU,예시 X-2
+예시고객사 H,EX192,Forklift,Unregulated,50,Muffler,500kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally open),Hardwire,Hardwire,,,,VCU,ECU,예시 X-1
+예시고객사 H,EX193,Generator,Unregulated,380,DOC,250kb,Hardwire Foot and Hand,ECU control,CAN type,,Hardwire,Hardwire,,,,ECU,VCU,예시 X-1
+예시고객사 H,EX194,Forklift,Unregulated,50,Muffler,250kb,Hardwire Foot,VCU control,HW type,Hardwire (Normally open),Hardwire,CAN,,,,VCU,ECU,예시 X-2
+예시고객사 H,EX195,Forklift,Unregulated,40,Muffler,250kb,Hardwire Foot,ECU control,CAN,Hardwire (Normally open),CAN,Hardwire,,,,ECU,VCU,예시 X-1
+예시고객사 H,EX196,Generator,Unregulated,360,Muffler,250kb,CAN (TSC1),VCU control,HW type,,Hardwire,Hardwire,,,,ECU,VCU,예시 X-1

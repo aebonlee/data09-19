@@ -9,12 +9,13 @@
 
   var db = S.loadDb();
   var imp = null;          // 가져오기 진행 상태
-  var view = { q: '', filters: {}, page: 0 };
+  var view = { q: '', filters: {}, page: 0, onlyBad: false };
   var anal = { filters: {}, axis: 'f_region', option: 'f_cel' };
 
   // 차트 색 — 선택지 순서(카탈로그 순서)에 고정해 거르기를 바꿔도 색이 바뀌지 않습니다. 미입력은 회색
   var SERIES = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#e34948'];
   var EMPTY_COLOR = '#a3a8b0';
+  var NA_COLOR = '#dcdfe4';   // 적용 조건상 쓰지 않음 — 미입력보다 옅게
   var OVER_COLOR = '#6b7280';
 
   // ── 작은 도구 ─────────────────────────────────────────────
@@ -93,10 +94,13 @@
   function tag() { return db._sample ? '_예시데이터' : ''; }
   function F(id) { return L.getField(db.catalog, id); }
   function errText(e) {
-    return { name_required: '이름을 적어 주세요', name_duplicate: '같은 이름의 항목이 이미 있습니다', label_required: '선택지 이름을 적어 주세요', label_duplicate: '같은 이름의 선택지가 이미 있습니다' }[e.message] || e.message;
+    return { name_required: '이름을 적어 주세요', name_duplicate: '같은 이름의 항목이 이미 있습니다', label_required: '선택지 이름을 적어 주세요', label_duplicate: '같은 이름의 선택지가 이미 있습니다',
+      rule_field: '옵션 항목과 조건 항목을 골라 주세요', rule_self: '옵션 항목과 조건 항목이 같습니다', rule_target: '규칙은 옵션 항목에만 걸 수 있습니다',
+      rule_when: '조건 항목은 선택 목록 항목이어야 합니다', rule_choices: '조건이 되는 선택지를 하나 이상 골라 주세요', rule_duplicate: '같은 옵션·조건 항목의 규칙이 이미 있습니다 — 지우고 다시 만드세요' }[e.message] || e.message;
   }
   function colorOf(field, choiceId) {
     if (!choiceId) return EMPTY_COLOR;
+    if (choiceId === L.NA_ID) return NA_COLOR;
     var i = field.choices.map(function (c) { return c.id; }).indexOf(choiceId);
     return i >= 0 && i < SERIES.length ? SERIES[i] : OVER_COLOR;
   }
@@ -109,7 +113,7 @@
   function loadSample() {
     var s = Sample.sampleDb();
     db.catalog = s.catalog; db.records = s.records; db.seq = s.seq; db._sample = true;
-    save(); view = { q: '', filters: {}, page: 0 }; anal.filters = {};
+    save(); view = { q: '', filters: {}, page: 0, onlyBad: false }; anal.filters = {};
     location.hash = '#/records';
     render();
     toast('예시 데이터 ' + s.records.length + '건을 불러왔습니다');
@@ -180,10 +184,10 @@
       main.appendChild(h('section', { class: 'card' },
         h('h2', null, '시작하기'),
         h('ol', { class: 'prompt-steps' },
-          h('li', null, '「옵션 카탈로그」에서 옵션 항목과 선택지를 확인하고 필요한 것을 추가합니다. 원문에 나온 항목(ATS type, CAN SA, Pedal type, starter control type, check engine lamp)이 들어 있습니다.'),
+          h('li', null, '「옵션 카탈로그」에서 옵션 항목과 선택지를 확인하고 필요한 것을 추가합니다. 2026-09-29에 구체화한 옵션 13개(ATS type, CAN1(J1939) baudrate, Accelerator type … Electric feed pump)와 적용 조건이 들어 있습니다.'),
           h('li', null, '「새 레코드 입력」으로 고객사×장비 한 건씩 입력하거나, 「Excel 가져오기」로 기존 파일을 불러와 열을 항목에 연결합니다.'),
-          h('li', null, '「사용 빈도」「기준별 비교」에서 고객사·지역·장비 유형별로 많이 쓰는 옵션을 봅니다.')),
-        h('p', { class: 'note' }, '먼저 둘러보려면 예시 데이터(가상 고객사 6곳, 72건)를 불러오세요. 가져오기 연습용 파일은 samples 폴더의 「예시데이터_옵션내역.xlsx」입니다.'),
+          h('li', null, '「사용 빈도」「기준별 비교」에서 고객사·Emission regulation·Machine type별로 많이 쓰는 옵션을 봅니다.')),
+        h('p', { class: 'note' }, '먼저 둘러보려면 예시 데이터(가상 고객사 8곳, 96건)를 불러오세요. 가져오기 연습용 파일은 samples 폴더의 「예시데이터_옵션내역.xlsx」입니다.'),
         h('div', { class: 'btn-row' }, sampleButton(true))));
       return;
     }
@@ -195,11 +199,21 @@
     filters.insertBefore(field('검색어', q), filters.firstChild);
     card.appendChild(filters);
 
+    var bad = L.ruleViolations(db.catalog, db.records);
+    var badIds = {};
+    bad.forEach(function (b) { badIds[b.recordId] = true; });
+    var badCount = Object.keys(badIds).length;
+    if (!badCount) view.onlyBad = false;
+    if (badCount) card.appendChild(h('div', { class: 'alert warn', 'data-violations': String(badCount) },
+      '적용 조건에 맞지 않는 값이 든 레코드가 ' + badCount + '건 있습니다(예: DPF 가 없는 ATS 인데 Regeneration 스위치 값이 있음). 행을 눌러 고치거나, 「옵션 카탈로그」의 적용 조건을 확인하세요. ',
+      h('button', { type: 'button', class: 'btn btn-sm', onclick: function () { view.onlyBad = !view.onlyBad; view.page = 0; render(); } }, view.onlyBad ? '모두 보기' : '해당 레코드만 보기')));
+
     var list = L.filterRecords(db.catalog, db.records, view.q, view.filters);
-    var active = Object.keys(view.filters).length || view.q;
+    if (view.onlyBad) list = list.filter(function (r) { return badIds[r.id]; });
+    var active = Object.keys(view.filters).length || view.q || view.onlyBad;
     card.appendChild(h('div', { class: 'list-meta' },
       h('span', null, '전체 ' + db.records.length + '건' + (active ? ' 중 ' + list.length + '건' : '')),
-      active ? h('button', { type: 'button', class: 'btn', onclick: function () { view = { q: '', filters: {}, page: 0 }; render(); } }, '거르기 풀기') : null,
+      active ? h('button', { type: 'button', class: 'btn', onclick: function () { view = { q: '', filters: {}, page: 0, onlyBad: false }; render(); } }, '거르기 풀기') : null,
       h('span', { class: 'note' }, '행을 누르면 고치기·복제 입력·지우기를 할 수 있습니다.')));
 
     var cols = L.fieldsOf(db.catalog);
@@ -211,7 +225,9 @@
         onkeydown: function (e) { if (e.key === 'Enter') editRecord(r); } },
         cols.map(function (f) {
           var t = L.displayValue(f, r.v[f.id]);
-          return h('td', { class: f.type === 'number' ? 'num' : '' }, t || h('span', { class: 'muted' }, '—'));
+          var ok = L.isApplicable(db.catalog, r.v, f.id);
+          if (!t) return h('td', null, h('span', { class: 'muted', title: ok ? '미입력' : '적용 조건상 쓰지 않음' }, ok ? '—' : '해당 없음'));
+          return h('td', { class: (f.type === 'number' ? 'num' : '') + (ok ? '' : ' cell-bad'), title: ok ? null : '적용 조건에 맞지 않는 값' }, t);
         }));
       tb.appendChild(tr);
     });
@@ -251,13 +267,34 @@
     var errBox = h('div');
     var content = [errBox, group('base', '기본 정보'), group('option', '옵션 선택')];
     function collect() { var v = {}; Object.keys(inputs).forEach(function (k) { v[k] = inputs[k].value; }); return v; }
+    // 적용 조건: 조건 항목을 바꾸면 해당 없는 옵션은 비우고 잠급니다(규칙이 이어질 수 있어 두 번 돌립니다)
+    var ruleNotes = {};
+    L.rulesOf(db.catalog).forEach(function (r) {
+      var inp = inputs[r.target];
+      if (!inp || ruleNotes[r.target]) return;
+      ruleNotes[r.target] = h('small', { class: 'hint rule-note' });
+      inp.parentNode.appendChild(ruleNotes[r.target]);
+    });
+    function applyRules() {
+      for (var pass = 0; pass < 2; pass++) {
+        var v = collect();
+        Object.keys(ruleNotes).forEach(function (fid) {
+          var a = L.applicability(db.catalog, v, fid);
+          var inp = inputs[fid];
+          inp.disabled = !a.ok;
+          if (!a.ok) inp.value = '';
+          ruleNotes[fid].textContent = a.ok ? '' : '해당 없음 — ' + L.ruleText(db.catalog, a.rule);
+        });
+      }
+    }
+    Object.keys(inputs).forEach(function (k) { inputs[k].addEventListener('change', applyRules); });
     function doSave() {
       var v = collect();
       var errs = L.validateRecord(db.catalog, v);
       errBox.textContent = '';
       if (errs.length) {
         errBox.appendChild(h('div', { class: 'alert error' }, errs.map(function (e) {
-          return h('div', null, F(e.fieldId).name + ' — ' + ({ required: '꼭 적어야 합니다', not_number: '숫자로 적어 주세요(예: 75 또는 75 kW)', unknown_choice: '카탈로그에 없는 선택지입니다' }[e.code]));
+          return h('div', null, F(e.fieldId).name + ' — ' + ({ required: '꼭 적어야 합니다', not_number: '숫자로 적어 주세요(예: 75 또는 75 kW)', unknown_choice: '카탈로그에 없는 선택지입니다', not_applicable: '적용 조건상 쓰지 않는 항목입니다. 값을 비우세요' }[e.code]));
         })));
         return;
       }
@@ -281,10 +318,16 @@
     }
     actions.push(h('button', { type: 'button', class: 'btn btn-primary', onclick: doSave }, rec ? '저장' : '입력'));
     openDialog(rec ? '레코드 고치기' : (copyFrom ? '복제 입력 — 바뀐 곳만 고치세요' : '새 레코드 입력'), content, actions);
+    // 고치기로 연 레코드가 이미 규칙에 어긋나 있으면 값을 몰래 지우지 않고 알려 줍니다
+    var pre = rec ? L.validateRecord(db.catalog, L.cleanRecord(db.catalog, collect())).filter(function (e) { return e.code === 'not_applicable'; }) : [];
+    if (pre.length) {
+      errBox.appendChild(h('div', { class: 'alert warn' }, pre.map(function (e) { return h('div', null, F(e.fieldId).name + ' — ' + L.ruleText(db.catalog, L.applicability(db.catalog, rec.v, e.fieldId).rule) + '. 값을 비우거나 조건 항목을 고치세요.'); })));
+      Object.keys(ruleNotes).forEach(function (fid) { if (inputs[fid].value) ruleNotes[fid].textContent = '적용 조건에 맞지 않는 값'; });
+    } else applyRules();
   }
 
   function exportAll() {
-    var sheets = { '옵션 내역': L.recordsSheet(db.catalog, db.records), '카탈로그': L.catalogSheet(db.catalog) };
+    var sheets = { '옵션 내역': L.recordsSheet(db.catalog, db.records), '카탈로그': L.catalogSheet(db.catalog), '적용 조건': L.rulesSheet(db.catalog) };
     var opts = L.fieldsOf(db.catalog, 'option').map(function (f) { return f.id; });
     ['f_customer', 'f_region', 'f_equip'].forEach(function (a) {
       var f = F(a);
@@ -298,11 +341,13 @@
   function renderCatalog(main) {
     main.appendChild(h('div', { class: 'page-head' }, h('h1', null, '옵션 카탈로그'),
       h('div', { class: 'btn-row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
-        writeXlsx('옵션카탈로그' + tag() + '_' + today() + '.xlsx', { '카탈로그': L.catalogSheet(db.catalog) });
+        writeXlsx('옵션카탈로그' + tag() + '_' + today() + '.xlsx', { '카탈로그': L.catalogSheet(db.catalog), '적용 조건': L.rulesSheet(db.catalog) });
       } }, '카탈로그 Excel 내보내기'))));
     main.appendChild(h('section', { class: 'card' },
       h('p', null, '옵션 항목과 항목별 선택지를 여기서 직접 늘리고 고칩니다. 코드를 고치지 않아도 됩니다.'),
-      h('p', { class: 'note' }, '지우기 대신 「숨기기」를 씁니다. 숨긴 항목·선택지는 새 입력 화면에서 빠지지만, 이미 입력한 기록과 집계에는 남습니다. 선택지 이름을 고치면 이미 입력한 레코드에도 새 이름이 보입니다.')));
+      h('p', { class: 'note' }, '지우기 대신 「숨기기」를 씁니다. 숨긴 항목·선택지는 새 입력 화면에서 빠지지만, 이미 입력한 기록과 집계에는 남습니다. 선택지 이름을 고치면 이미 입력한 레코드에도 새 이름이 보입니다.'),
+      Array.isArray(db.catalog.rules) ? null : h('div', { class: 'alert info', 'data-old-catalog': '1' },
+        '지금 카탈로그는 2026-09-29 이전 판입니다. 처음 카탈로그가 구체화한 옵션 13개와 적용 조건으로 바뀌었습니다. 예시 데이터라면 「예시 데이터 불러오기」로, 실제 데이터라면 백업한 뒤 「백업·복원 → 모두 지우기」로 새 카탈로그를 볼 수 있습니다. 적용 조건은 아래에서 직접 추가할 수도 있습니다.')));
 
     var fs = h('section', { class: 'card' }, h('h2', null, '항목 추가'));
     var nm = h('input', { type: 'text', name: 'new_field', placeholder: '예: 새 옵션 항목 이름' });
@@ -317,12 +362,53 @@
     main.appendChild(fs);
 
     [['base', '기본 정보 항목', '레코드를 구분하는 정보입니다. 장비 유형·지역처럼 목록에서 고르는 항목은 선택지를 관리합니다.'],
-     ['option', '옵션 항목', '고객사가 장비별로 고르는 인터페이스 옵션입니다. 원문에 선택지가 나온 것(check engine lamp)만 미리 채웠습니다.']].forEach(function (g) {
+     ['option', '옵션 항목', '고객사가 장비별로 고르는 인터페이스 옵션입니다. 처음 카탈로그는 2026-09-29에 구체화한 13개 항목과 선택지입니다. Oil pressure lamp 는 선택지가 정해지지 않아 비워 두었습니다.']].forEach(function (g) {
       var sec = h('section', { class: 'card' }, h('h2', null, g[1]), h('p', { class: 'note' }, g[2]));
       var list = L.fieldsOf(db.catalog, g[0], true);
       list.forEach(function (f, i) { sec.appendChild(fieldCard(f, i, list.length)); });
       main.appendChild(sec);
     });
+    main.appendChild(rulesCard());
+  }
+
+  // 적용 조건(규칙): 「이 옵션은 저 항목이 이 선택지일 때만 씁니다」
+  function rulesCard() {
+    var sec = h('section', { class: 'card', id: 'rules' }, h('h2', null, '적용 조건'),
+      h('p', { class: 'note' }, '특정 장비 유형이나 후처리 방식에서만 쓰는 옵션을 적어 둡니다. 조건에 맞지 않는 레코드에서는 입력 칸이 잠기고, 집계에는 「(해당 없음)」으로 따로 셉니다(미입력과 구분). 처음 들어 있는 3개는 가정이니 실제와 다르면 지우고 다시 만드세요.'));
+    var rs = L.rulesOf(db.catalog);
+    var ul = h('ul', { class: 'rule-list' });
+    if (!rs.length) ul.appendChild(h('li', { class: 'note' }, '규칙이 없습니다. 모든 옵션을 모든 레코드에서 씁니다.'));
+    rs.forEach(function (r) {
+      var n = L.ruleViolations({ fields: db.catalog.fields, rules: [r] }, db.records).length;
+      ul.appendChild(h('li', { class: 'rule-row', 'data-rule': r.id }, h('span', null, L.ruleText(db.catalog, r)),
+        n ? h('span', { class: 'note warn-text' }, ' 어긋난 레코드 ' + n + '건') : null,
+        h('button', { type: 'button', class: 'btn btn-sm', onclick: function () { tryDo(function () { L.removeRule(db.catalog, r.id); }); toast('규칙을 지웠습니다'); } }, '지우기')));
+    });
+    sec.appendChild(ul);
+
+    var opts = L.fieldsOf(db.catalog, 'option').map(function (f) { return [f.id, f.name]; });
+    var whens = L.fieldsOf(db.catalog).filter(function (f) { return f.type === 'select'; }).map(function (f) { return [f.id, (f.kind === 'base' ? '기본 정보 · ' : '옵션 · ') + f.name]; });
+    var tSel = select('rule_target', [['', '(옵션 항목)']].concat(opts), '', { 'aria-label': '규칙을 걸 옵션 항목' });
+    var wSel = select('rule_when', [['', '(조건 항목)']].concat(whens), '', { 'aria-label': '조건 항목' });
+    var box = h('div', { class: 'rule-choices', role: 'group', 'aria-label': '이 선택지일 때만 씀' });
+    function drawChoices() {
+      box.textContent = '';
+      var w = F(wSel.value);
+      if (!w) { box.appendChild(h('span', { class: 'note' }, '조건 항목을 고르면 선택지가 나옵니다.')); return; }
+      if (!w.choices.length) { box.appendChild(h('span', { class: 'note' }, '이 항목은 선택지가 없습니다.')); return; }
+      w.choices.forEach(function (c) {
+        box.appendChild(h('label', { class: 'check' }, h('input', { type: 'checkbox', value: c.id }), c.label + (c.active ? '' : ' (숨김)')));
+      });
+    }
+    wSel.addEventListener('change', drawChoices); drawChoices();
+    sec.appendChild(h('h3', { class: 'form-sec' }, '규칙 추가'));
+    sec.appendChild(h('div', { class: 'filters' }, field('옵션 항목', tSel), field('조건 항목', wSel)));
+    sec.appendChild(h('div', { class: 'field' }, h('span', null, '이 선택지일 때만 씀'), box));
+    sec.appendChild(h('div', { class: 'btn-row' }, h('button', { type: 'button', class: 'btn btn-primary', onclick: function () {
+      var ins = Array.prototype.map.call(box.querySelectorAll('input:checked'), function (x) { return x.value; });
+      tryDo(function () { var r = L.addRule(db.catalog, { target: tSel.value, when: wSel.value, 'in': ins }); toast(L.ruleText(db.catalog, r)); });
+    } }, '규칙 추가')));
+    return sec;
   }
   function fieldCard(f, i, n) {
     var used = db.records.filter(function (r) { return r.v[f.id] != null && r.v[f.id] !== ''; }).length;
@@ -331,7 +417,8 @@
     var typeLabel = { text: '글자', select: '선택 목록', number: '숫자' }[f.type];
     var box = h('div', { class: 'fcard' + (f.active ? '' : ' hidden-item'), 'data-field': f.id },
       h('div', { class: 'fcard-head' }, name,
-        h('span', { class: 'note' }, typeLabel + ' · 입력 ' + used + '건' + (f.required ? ' · 필수' : '') + (f.active ? '' : ' · 숨김')),
+        h('span', { class: 'note' }, typeLabel + ' · 입력 ' + used + '건' + (f.required ? ' · 필수' : '') + (f.active ? '' : ' · 숨김')
+          + (L.rulesOf(db.catalog).some(function (r) { return r.target === f.id; }) ? ' · 적용 조건 있음' : '')),
         h('div', { class: 'btn-row' },
           h('button', { type: 'button', class: 'btn btn-sm', disabled: i === 0, 'aria-label': f.name + ' 위로', onclick: function () { tryDo(function () { L.moveField(db.catalog, f.id, -1); }); } }, '위로'),
           h('button', { type: 'button', class: 'btn btn-sm', disabled: i === n - 1, 'aria-label': f.name + ' 아래로', onclick: function () { tryDo(function () { L.moveField(db.catalog, f.id, 1); }); } }, '아래로'),
@@ -467,7 +554,8 @@
         save();
         imp = null;
         location.hash = '#/records';
-        toast(res.records.length + '건을 불러왔습니다' + (res.addedFields ? ' · 새 항목 ' + res.addedFields + '개' : '') + (res.addedChoices ? ' · 새 선택지 ' + res.addedChoices + '개' : '') + (res.badNumbers ? ' · 숫자로 못 읽은 값 ' + res.badNumbers + '개는 비워 둠' : ''));
+        var nb = L.ruleViolations(db.catalog, db.records).length;
+        toast(res.records.length + '건을 불러왔습니다' + (res.addedFields ? ' · 새 항목 ' + res.addedFields + '개' : '') + (res.addedChoices ? ' · 새 선택지 ' + res.addedChoices + '개' : '') + (res.badNumbers ? ' · 숫자로 못 읽은 값 ' + res.badNumbers + '개는 비워 둠' : '') + (nb ? ' · 적용 조건에 맞지 않는 값 ' + nb + '개(목록에서 확인)' : ''));
       } }, t.rows.length + '건 불러오기')));
     main.appendChild(c4);
   }
@@ -491,6 +579,7 @@
           var st = L.choiceStats(db.catalog, list, f.id);
           st.items.forEach(function (it) { aoa.push([f.name, it.label, it.count, it.pct]); });
           if (st.empty.count) aoa.push([f.name, L.EMPTY_LABEL, st.empty.count, st.empty.pct]);
+          if (st.na.count) aoa.push([f.name, L.NA_LABEL, st.na.count, st.na.pct]);
         });
         writeXlsx('옵션사용빈도' + tag() + '_' + today() + '.xlsx', { '사용 빈도': aoa, '거르기 조건': filterSheet() });
       } }, 'Excel 내보내기'))));
@@ -499,10 +588,11 @@
     L.fieldsOf(db.catalog, 'option').forEach(function (f) {
       var st = L.choiceStats(db.catalog, list, f.id);
       var card = h('section', { class: 'card stat-card', 'data-option': f.id }, h('h2', null, f.name));
-      if (!st.items.length && !st.empty.count) { card.appendChild(h('p', { class: 'note' }, '대상 레코드가 없습니다.')); grid.appendChild(card); return; }
+      if (!st.items.length && !st.empty.count && !st.na.count) { card.appendChild(h('p', { class: 'note' }, '대상 레코드가 없습니다.')); grid.appendChild(card); return; }
       var bars = h('div', { class: 'bars', role: 'img', 'aria-label': f.name + ' 선택지별 사용 비율 막대' });
       var rows = st.items.map(function (it) { return { id: it.id, label: it.label + (it.active ? '' : ' (숨김)'), count: it.count, pct: it.pct }; });
       if (st.empty.count) rows.push({ id: '', label: L.EMPTY_LABEL, count: st.empty.count, pct: st.empty.pct });
+      if (st.na.count) rows.push({ id: L.NA_ID, label: L.NA_LABEL, count: st.na.count, pct: st.na.pct });
       rows.forEach(function (r) {
         var tip = r.label + ': ' + r.count + '건 (' + fmt(r.pct) + '%)';
         bars.appendChild(h('div', { class: 'bar-row', title: tip },
@@ -515,7 +605,7 @@
       grid.appendChild(card);
     });
     main.appendChild(grid);
-    main.appendChild(h('p', { class: 'note' }, '비율의 분모는 대상 레코드 전체(미입력 포함)입니다. 막대에 마우스를 올리면 건수와 비율이 보입니다.'));
+    main.appendChild(h('p', { class: 'note' }, '비율의 분모는 대상 레코드 전체(미입력·해당 없음 포함)입니다. 「(해당 없음)」은 적용 조건상 그 옵션을 쓰지 않는 레코드입니다(예: 발전기의 Parking Brake). 막대에 마우스를 올리면 건수와 비율이 보입니다.'));
   }
   function filterSheet() {
     var aoa = [['항목', '조건']];
@@ -563,7 +653,7 @@
 
     // 한눈에: 기준값별 최다 선택지
     var c1 = h('section', { class: 'card' }, h('h2', null, axis.name + '별로 가장 많이 쓰는 선택지'),
-      h('p', { class: 'note' }, '칸마다 그 ' + axis.name + '에서 가장 많이 고른 선택지와 비율입니다. 미입력은 빼고 셉니다. 건수가 같으면 함께 적습니다.'));
+      h('p', { class: 'note' }, '칸마다 그 ' + axis.name + '에서 가장 많이 고른 선택지와 비율입니다. 미입력·해당 없음은 빼고 셉니다. 건수가 같으면 함께 적습니다.'));
     var tb = h('tbody');
     tops.forEach(function (r) {
       tb.appendChild(h('tr', null, h('th', { scope: 'row' }, r.label), h('td', { class: 'num' }, r.total),
@@ -630,20 +720,20 @@
               var nd;
               try { nd = L.parseBackup(text); } catch (e) { toast('이 도구의 백업 파일이 아닙니다', true); return; }
               confirmDialog('백업에서 복원', '지금 데이터(' + db.records.length + '건)를 백업 파일의 ' + nd.records.length + '건과 카탈로그로 바꿉니다.', '복원', function () {
-                db = nd; save(); view = { q: '', filters: {}, page: 0 }; anal.filters = {}; render(); toast(nd.records.length + '건을 복원했습니다');
+                db = nd; save(); view = { q: '', filters: {}, page: 0, onlyBad: false }; anal.filters = {}; render(); toast(nd.records.length + '건을 복원했습니다');
               });
             });
           } });
           return h('label', { class: 'btn file-btn' }, '백업에서 복원', inp);
         })()),
       h('h2', { style: 'margin-top:24px' }, 'Excel'),
-      h('p', { class: 'note' }, 'Excel 내보내기에는 옵션 내역·카탈로그·고객사/지역/장비 유형별 최다 옵션 시트가 들어갑니다. 내보낸 파일은 「Excel 가져오기」로 다시 불러올 수 있습니다(숨김 상태는 백업 파일로만 옮겨집니다).'),
+      h('p', { class: 'note' }, 'Excel 내보내기에는 옵션 내역·카탈로그·적용 조건·고객사/Emission regulation/Machine type별 최다 옵션 시트가 들어갑니다. 내보낸 파일은 「Excel 가져오기」로 다시 불러올 수 있습니다(숨김 상태는 백업 파일로만 옮겨집니다).'),
       h('div', { class: 'btn-row' }, db.records.length ? h('button', { type: 'button', class: 'btn', onclick: exportAll }, 'Excel 내보내기') : null, importButton()),
       h('h2', { style: 'margin-top:24px' }, '처음으로'),
       h('div', { class: 'btn-row' }, sampleButton(false),
         h('button', { type: 'button', class: 'btn btn-danger', onclick: function () {
-          confirmDialog('모두 지우기', '옵션 내역과 카탈로그를 모두 지우고 처음 카탈로그(원문 항목)로 돌아갑니다. 되돌릴 수 없습니다.', '모두 지우기', function () {
-            db = L.emptyDb(); S.clearDb(); save(); view = { q: '', filters: {}, page: 0 }; anal.filters = {}; render(); toast('모두 지웠습니다');
+          confirmDialog('모두 지우기', '옵션 내역과 카탈로그를 모두 지우고 처음 카탈로그(2026-09-29 구체화 항목과 적용 조건)로 돌아갑니다. 되돌릴 수 없습니다.', '모두 지우기', function () {
+            db = L.emptyDb(); S.clearDb(); save(); view = { q: '', filters: {}, page: 0, onlyBad: false }; anal.filters = {}; render(); toast('모두 지웠습니다');
           });
         } }, '모두 지우기'))));
   }

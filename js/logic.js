@@ -18,6 +18,8 @@
   var NEW_OPTION = 'new:option'; // 열 매핑: 이 열을 새 옵션 항목으로 추가
   var NEW_BASE = 'new:base';     // 열 매핑: 이 열을 새 기본 정보 항목으로 추가
   var EMPTY_LABEL = '(미입력)';
+  var NA_ID = '__na__';          // 분석: 적용 조건상 쓰지 않는 레코드
+  var NA_LABEL = '(해당 없음)';
 
   function clone(x) { return JSON.parse(JSON.stringify(x)); }
   function str(v) { return v == null ? '' : String(v).trim(); }
@@ -36,22 +38,44 @@
   }
 
   // ── 초기 카탈로그 ───────────────────────────────────────────
-  // 항목 이름은 제출 원문 그대로입니다. 선택지는 원문에 나온 것(check engine lamp: CAN type / HW type,
-  // 장비 유형: 굴삭기·지게차·발전기, 지역: 한국·유럽·미국)만 넣었고, 나머지는 담당자가 채웁니다.
+  // 2026-09-29 수강생이 구체화한 옵션 카탈로그(패들릿 첨부 「인터페이스 옵션 관리」 PDF) 그대로입니다.
+  // 항목 이름·선택지 이름·순서는 원문 표기를 따릅니다(DOC_SDPF 의 밑줄도 원문 그대로).
+  //   - 장비 유형은 「Machine type」, 지역은 「Emission regulation」(배출 규제)로 바뀌었습니다.
+  //     id(f_equip·f_region)는 그대로 두어 저장된 데이터·열 연결이 이어집니다.
+  //   - Oil pressure lamp 는 원문에 선택지가 없어 비워 둡니다(담당자가 채움).
+  // 선택지 id 는 항목마다 접두어+순번이라 이름을 고쳐도 기존 레코드가 따라옵니다.
   function defaultCatalog() {
     function ch(prefix, labels) { return labels.map(function (l, i) { return { id: prefix + (i + 1), label: l, active: true }; }); }
+    function opt(id, name, prefix, labels) { return { id: id, name: name, kind: 'option', type: 'select', required: false, active: true, choices: ch(prefix, labels) }; }
+    var CAN_HW = ['CAN', 'Hardwire'], VCU_ECU = ['VCU', 'ECU'];
     return {
       fields: [
         { id: 'f_customer', name: '고객사', kind: 'base', type: 'text', required: true, active: true, choices: [] },
         { id: 'f_suffix', name: 'engine suffix', kind: 'base', type: 'text', required: false, active: true, choices: [] },
-        { id: 'f_equip', name: '장비 유형', kind: 'base', type: 'select', required: false, active: true, choices: ch('c_equip', ['굴삭기', '지게차', '발전기']) },
-        { id: 'f_region', name: '지역', kind: 'base', type: 'select', required: false, active: true, choices: ch('c_region', ['한국', '유럽', '미국']) },
+        { id: 'f_equip', name: 'Machine type', kind: 'base', type: 'select', required: false, active: true, choices: ch('c_equip', ['Excavator', 'Forklift', 'Generator', 'Loader', 'TLS']) },
+        { id: 'f_region', name: 'Emission regulation', kind: 'base', type: 'select', required: false, active: true, choices: ch('c_region', ['Korea Stage5', 'EU Stage5', 'NA Tier4f', 'EU Stage3A', 'Unregulated']) },
         { id: 'f_power', name: '출력', kind: 'base', type: 'number', required: false, active: true, choices: [] },
-        { id: 'f_ats', name: 'ATS type', kind: 'option', type: 'select', required: false, active: true, choices: [] },
-        { id: 'f_cansa', name: 'CAN SA', kind: 'option', type: 'select', required: false, active: true, choices: [] },
-        { id: 'f_pedal', name: 'Pedal type', kind: 'option', type: 'select', required: false, active: true, choices: [] },
-        { id: 'f_starter', name: 'starter control type', kind: 'option', type: 'select', required: false, active: true, choices: [] },
-        { id: 'f_cel', name: 'check engine lamp', kind: 'option', type: 'select', required: false, active: true, choices: ch('c_cel', ['CAN type', 'HW type']) }
+        opt('f_ats', 'ATS type', 'c_ats', ['DOC+DPF', 'DOC_SDPF', 'DOC', 'Muffler']),
+        opt('f_baud', 'CAN1(J1939) baudrate', 'c_baud', ['250kb', '500kb']),
+        opt('f_accel', 'Accelerator type', 'c_accel', ['CAN (SMVCU)', 'CAN (EEC2)', 'CAN (TSC1)', 'Hardwire Foot', 'Hardwire Foot and Hand']),
+        opt('f_starter', 'starter control type', 'c_starter', ['VCU control', 'ECU control']),
+        opt('f_cel', 'check engine lamp', 'c_cel', ['CAN type', 'HW type']),
+        opt('f_pbrake', 'Parking Brake', 'c_pbrake', ['CAN (CCVS)', 'CAN (SMVCU)', 'Hardwire (Normally open)', 'Hardwire (Normally closed)']),
+        opt('f_sac', 'SAC lamp', 'c_sac', CAN_HW),
+        opt('f_estop', 'Emergency stop', 'c_estop', CAN_HW),
+        opt('f_oilp', 'Oil pressure lamp', 'c_oilp', []),
+        opt('f_regen_dem', 'Regeneration demand switch', 'c_regdem', CAN_HW),
+        opt('f_regen_inh', 'Regeneration inhibit switch', 'c_reginh', CAN_HW),
+        opt('f_wif', 'WIF', 'c_wif', VCU_ECU),
+        opt('f_efp', 'Electric feed pump', 'c_efp', VCU_ECU)
+      ],
+      // 적용 조건(가정 — 원문에는 제약이 적혀 있지 않아 담당자 확인이 필요합니다. 화면에서 지우거나 더할 수 있습니다)
+      //   - 재생(Regeneration) 스위치는 DPF 가 있는 후처리(DOC+DPF, DOC_SDPF)에서만 의미가 있습니다.
+      //   - Parking Brake 는 주행하지 않는 발전기(Generator)에는 없다고 보았습니다.
+      rules: [
+        { id: 'rule1', target: 'f_regen_dem', when: 'f_ats', 'in': ['c_ats1', 'c_ats2'] },
+        { id: 'rule2', target: 'f_regen_inh', when: 'f_ats', 'in': ['c_ats1', 'c_ats2'] },
+        { id: 'rule3', target: 'f_pbrake', when: 'f_equip', 'in': ['c_equip1', 'c_equip2', 'c_equip4', 'c_equip5'] }
       ]
     };
   }
@@ -132,6 +156,69 @@
     return records.filter(function (r) { return r.v && r.v[fieldId] === choiceId; }).length;
   }
 
+  // ── 적용 조건(규칙) ────────────────────────────────────────
+  // rule = { id, target: 옵션 항목 id, when: 선택 목록 항목 id, in: [선택지 id…] }
+  //   「target 은 when 의 값이 in 중 하나일 때만 씁니다」. 같은 target 에 규칙이 여럿이면 모두 맞아야 합니다.
+  //   when 이 비어 있으면(아직 안 고름) 판단할 수 없으므로 막지 않습니다.
+  function rulesOf(catalog) { return Array.isArray(catalog.rules) ? catalog.rules : []; }
+  function getRule(catalog, id) { return rulesOf(catalog).filter(function (r) { return r.id === id; })[0] || null; }
+  function addRule(catalog, spec) {
+    var t = getField(catalog, spec.target), w = getField(catalog, spec.when);
+    if (!t || !w) throw new Error('rule_field');
+    if (t.id === w.id) throw new Error('rule_self');
+    if (t.kind !== 'option') throw new Error('rule_target');
+    if (w.type !== 'select') throw new Error('rule_when');
+    var ins = (spec['in'] || []).filter(function (id, i, a) { return getChoice(w, id) && a.indexOf(id) === i; });
+    if (!ins.length) throw new Error('rule_choices');
+    if (rulesOf(catalog).some(function (r) { return r.target === t.id && r.when === w.id; })) throw new Error('rule_duplicate');
+    var taken = {};
+    rulesOf(catalog).forEach(function (r) { taken[r.id] = true; });
+    var rule = { id: newId('rule', taken), target: t.id, when: w.id, 'in': ins };
+    if (!Array.isArray(catalog.rules)) catalog.rules = [];
+    catalog.rules.push(rule);
+    return rule;
+  }
+  function removeRule(catalog, id) {
+    var before = rulesOf(catalog).length;
+    catalog.rules = rulesOf(catalog).filter(function (r) { return r.id !== id; });
+    return catalog.rules.length < before;
+  }
+  // 이 항목을 이 레코드 값(v)에서 쓰는가. 막는 규칙이 있으면 { ok:false, rule } 을 줍니다
+  function applicability(catalog, v, fieldId) {
+    var rs = rulesOf(catalog);
+    for (var i = 0; i < rs.length; i++) {
+      var r = rs[i];
+      if (r.target !== fieldId) continue;
+      var x = v ? v[r.when] : null;
+      if (x == null || x === '') continue;
+      if (r['in'].indexOf(x) < 0) return { ok: false, rule: r };
+    }
+    return { ok: true, rule: null };
+  }
+  function isApplicable(catalog, v, fieldId) { return applicability(catalog, v, fieldId).ok; }
+  // 규칙을 사람이 읽는 문장으로
+  function ruleText(catalog, r) {
+    var t = getField(catalog, r.target), w = getField(catalog, r.when);
+    if (!t || !w) return '(항목이 없는 규칙)';
+    var labs = r['in'].map(function (id) { var c = getChoice(w, id); return c ? c.label : '?'; });
+    return '「' + t.name + '」은(는) 「' + w.name + '」이(가) ' + labs.join(' · ') + ' 일 때만 씁니다';
+  }
+  // 규칙에 맞지 않게 값이 들어간 곳 — 가져오기 뒤·목록에서 알려 줍니다(값을 몰래 지우지 않습니다)
+  function ruleViolations(catalog, records) {
+    var out = [];
+    var targets = {};
+    rulesOf(catalog).forEach(function (r) { targets[r.target] = true; });
+    records.forEach(function (rec) {
+      Object.keys(targets).forEach(function (fid) {
+        var x = rec.v[fid];
+        if (x == null || x === '') return;
+        var a = applicability(catalog, rec.v, fid);
+        if (!a.ok) out.push({ recordId: rec.id, fieldId: fid, ruleId: a.rule.id });
+      });
+    });
+    return out;
+  }
+
   // ── 값 ──────────────────────────────────────────────────────
   // "75", "75 kW", "1,200" → 숫자. 읽을 수 없으면 NaN, 빈 값이면 null
   function parseNumber(raw) {
@@ -159,6 +246,7 @@
       if (f.required && empty) errors.push({ fieldId: f.id, code: 'required' });
       if (!empty && f.type === 'number' && typeof x !== 'number' && isNaN(parseNumber(x))) errors.push({ fieldId: f.id, code: 'not_number' });
       if (!empty && f.type === 'select' && !getChoice(f, x)) errors.push({ fieldId: f.id, code: 'unknown_choice' });
+      if (!empty && !isApplicable(catalog, v, f.id)) errors.push({ fieldId: f.id, code: 'not_applicable' });
     });
     return errors;
   }
@@ -210,21 +298,28 @@
   // ── 분석 ────────────────────────────────────────────────────
   function pct(n, d) { return d ? Math.round(n / d * 1000) / 10 : 0; }
 
-  // 옵션 항목 하나의 선택지별 건수·비율. 비율의 분모는 전체 레코드 수(미입력 포함)
+  // 레코드 하나의 옵션 값을 집계 칸으로: 선택지 id / NA_ID(적용 조건상 쓰지 않음) / ''(미입력)
+  function cellKey(catalog, f, r) {
+    var x = r.v[f.id];
+    if (x != null && x !== '' && getChoice(f, x)) return x;
+    return isApplicable(catalog, r.v, f.id) ? '' : NA_ID;
+  }
+  // 옵션 항목 하나의 선택지별 건수·비율. 비율의 분모는 전체 레코드 수(미입력·해당 없음 포함)
   function choiceStats(catalog, records, fieldId) {
     var f = getField(catalog, fieldId);
-    var counts = {}, empty = 0;
+    var counts = {}, empty = 0, na = 0;
     records.forEach(function (r) {
-      var x = r.v[fieldId];
-      if (x == null || x === '' || !getChoice(f, x)) empty++;
-      else counts[x] = (counts[x] || 0) + 1;
+      var k = cellKey(catalog, f, r);
+      if (k === NA_ID) na++;
+      else if (!k) empty++;
+      else counts[k] = (counts[k] || 0) + 1;
     });
     var total = records.length;
     var items = f.choices.map(function (c, i) { return { id: c.id, label: c.label, active: c.active, count: counts[c.id] || 0, order: i }; })
       .filter(function (c) { return c.active || c.count; });
     items.sort(function (a, b) { return b.count - a.count || a.order - b.order; });
     items.forEach(function (c) { c.pct = pct(c.count, total); delete c.order; });
-    return { total: total, items: items, empty: { count: empty, pct: pct(empty, total) } };
+    return { total: total, items: items, empty: { count: empty, pct: pct(empty, total) }, na: { count: na, pct: pct(na, total) } };
   }
 
   // 기준(고객사·지역·장비 유형 등 기본 정보 항목) 값으로 레코드를 묶습니다
@@ -250,26 +345,28 @@
   // 기준 × 옵션 선택지 피벗. 칸 = 건수와 그 기준값 안에서의 비율
   function pivot(catalog, records, axisId, optionId) {
     var opt = getField(catalog, optionId);
-    var used = {}, anyEmpty = false;
-    records.forEach(function (r) { var x = r.v[optionId]; if (x && getChoice(opt, x)) used[x] = true; else anyEmpty = true; });
+    var used = {};
+    records.forEach(function (r) { used[cellKey(catalog, opt, r)] = true; });
     var cols = opt.choices.filter(function (c) { return c.active || used[c.id]; }).map(function (c) { return { id: c.id, label: c.label }; });
-    if (anyEmpty) cols.push({ id: '', label: EMPTY_LABEL });
+    if (used['']) cols.push({ id: '', label: EMPTY_LABEL });
+    if (used[NA_ID]) cols.push({ id: NA_ID, label: NA_LABEL });
     function row(key, label, recs) {
       var cnt = {};
-      recs.forEach(function (r) { var x = r.v[optionId]; var k = x && getChoice(opt, x) ? x : ''; cnt[k] = (cnt[k] || 0) + 1; });
+      recs.forEach(function (r) { var k = cellKey(catalog, opt, r); cnt[k] = (cnt[k] || 0) + 1; });
       var cells = cols.map(function (c) { var n = cnt[c.id] || 0; return { count: n, pct: pct(n, recs.length) }; });
       return { key: key, label: label, total: recs.length, cells: cells, top: topOf(cols, cells) };
     }
     var rows = groupBy(catalog, records, axisId).map(function (g) { return row(g.key, g.label, g.records); });
     return { cols: cols, rows: rows, total: row('*', '전체', records) };
   }
-  // 가장 많이 쓴 선택지(미입력 제외). 같은 건수면 ' / ' 로 함께 표시
+  // 가장 많이 쓴 선택지(미입력·해당 없음 제외). 같은 건수면 ' / ' 로 함께 표시
   function topOf(cols, cells) {
+    function real(i) { return cols[i].id && cols[i].id !== NA_ID; }
     var best = 0;
-    cells.forEach(function (c, i) { if (cols[i].id && c.count > best) best = c.count; });
+    cells.forEach(function (c, i) { if (real(i) && c.count > best) best = c.count; });
     if (!best) return null;
     var labels = [], p = 0;
-    cells.forEach(function (c, i) { if (cols[i].id && c.count === best) { labels.push(cols[i].label); p = c.pct; } });
+    cells.forEach(function (c, i) { if (real(i) && c.count === best) { labels.push(cols[i].label); p = c.pct; } });
     return { label: labels.join(' / '), count: best, pct: p };
   }
   // 기준값별로 옵션 항목마다 가장 많이 쓴 선택지 — 「많이 사용하는 옵션」 한눈에 보기
@@ -289,8 +386,10 @@
   var ALIASES = {
     f_customer: ['고객사', '고객', 'customer', 'client', '고객사명'],
     f_suffix: ['engine suffix', 'suffix', '엔진 suffix', '엔진서픽스'],
-    f_equip: ['장비 유형', '장비유형', '장비', '장비 타입', 'equipment', 'equipment type', 'machine type', 'application'],
-    f_region: ['지역', 'region', 'area', 'market'],
+    f_equip: ['장비 유형', '장비유형', '장비', '장비 타입', 'equipment', 'equipment type', 'machine type', 'machine', 'application'],
+    f_region: ['emission regulation', 'emission', 'regulation', '배출 규제', '배출규제', '규제', '지역', 'region', 'market'],
+    f_baud: ['CAN1 baudrate', 'baudrate', 'CAN baudrate', 'J1939 baudrate'],
+    f_accel: ['accelerator', 'pedal type', 'pedal'],
     f_power: ['출력', 'power', 'rated power', 'output', 'kw']
   };
   // 머리행(열 이름) → 필드 id. 이미 쓴 연결(saved)이 있으면 먼저 씁니다
@@ -418,6 +517,16 @@
     });
     return aoa;
   }
+  function rulesSheet(catalog) {
+    var aoa = [['옵션 항목', '조건 항목', '이 선택지일 때만 씀', '문장']];
+    rulesOf(catalog).forEach(function (r) {
+      var t = getField(catalog, r.target), w = getField(catalog, r.when);
+      if (!t || !w) return;
+      aoa.push([t.name, w.name, r['in'].map(function (id) { var c = getChoice(w, id); return c ? c.label : ''; }).join(', '), ruleText(catalog, r)]);
+    });
+    if (aoa.length === 1) aoa.push(['(규칙 없음)', '', '', '']);
+    return aoa;
+  }
   function pivotSheet(p, axisName, optionName) {
     var head = [axisName + ' \\ ' + optionName, '건수'];
     p.cols.forEach(function (c) { head.push(c.label + ' 건수', c.label + ' 비율(%)'); });
@@ -452,6 +561,9 @@
     p.catalog.fields.forEach(function (f) {
       if (!f.id || !f.name || !Array.isArray(f.choices)) throw new Error('bad_field');
     });
+    // 옛 백업(규칙 도입 전)에는 rules 가 없습니다 — 빈 목록으로
+    if (!Array.isArray(p.catalog.rules)) p.catalog.rules = [];
+    p.catalog.rules = p.catalog.rules.filter(function (r) { return r && r.id && r.target && r.when && Array.isArray(r['in']); });
     var db = { catalog: p.catalog, records: [], seq: 0, mapping: p.mapping || {} };
     p.records.forEach(function (r) { db.seq++; db.records.push({ id: 'r' + db.seq, v: r && r.v && typeof r.v === 'object' ? r.v : {} }); });
     if (p.sample) db._sample = true;
@@ -460,6 +572,9 @@
 
   var api = {
     NEW_CHOICE: NEW_CHOICE, SKIP_VALUE: SKIP_VALUE, NEW_OPTION: NEW_OPTION, NEW_BASE: NEW_BASE, EMPTY_LABEL: EMPTY_LABEL,
+    NA_ID: NA_ID, NA_LABEL: NA_LABEL,
+    rulesOf: rulesOf, getRule: getRule, addRule: addRule, removeRule: removeRule,
+    applicability: applicability, isApplicable: isApplicable, ruleText: ruleText, ruleViolations: ruleViolations, rulesSheet: rulesSheet,
     clone: clone, norm: norm, defaultCatalog: defaultCatalog, emptyDb: emptyDb,
     getField: getField, fieldsOf: fieldsOf, getChoice: getChoice, findChoiceByLabel: findChoiceByLabel,
     addField: addField, renameField: renameField, moveField: moveField,

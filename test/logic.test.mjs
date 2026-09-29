@@ -12,14 +12,15 @@ function test(name, fn) {
 }
 
 // 손으로 셀 수 있는 작은 데이터: 5건
-// 1 A 유럽 굴삭기 CAN   2 A 유럽 지게차 CAN   3 B 유럽 굴삭기 HW
-// 4 B 미국 굴삭기 HW    5 C 미국 (장비 없음) (lamp 없음)
+// 1 A EU Stage5 Excavator CAN   2 A EU Stage5 Forklift CAN   3 B EU Stage5 Excavator HW
+// 4 B NA Tier4f Excavator HW    5 C NA Tier4f (장비 없음) (lamp 없음)
+// (지역 → Emission regulation, 장비 유형 → Machine type — 2026-09-29 카탈로그. 한글 약칭은 아래 표로 연결)
 function small() {
   const cat = L.defaultCatalog();
   const rec = (cust, region, equip, cel) => ({
     v: Object.assign({ f_customer: cust },
-      region ? { f_region: { 한국: 'c_region1', 유럽: 'c_region2', 미국: 'c_region3' }[region] } : {},
-      equip ? { f_equip: { 굴삭기: 'c_equip1', 지게차: 'c_equip2', 발전기: 'c_equip3' }[equip] } : {},
+      region ? { f_region: { 한국: 'c_region1', 유럽: 'c_region2', 미국: 'c_region3' }[region] } : {},   // Korea Stage5 / EU Stage5 / NA Tier4f
+      equip ? { f_equip: { 굴삭기: 'c_equip1', 지게차: 'c_equip2', 발전기: 'c_equip3' }[equip] } : {},  // Excavator / Forklift / Generator
       cel ? { f_cel: cel === 'CAN' ? 'c_cel1' : 'c_cel2' } : {})
   });
   const records = [rec('A', '유럽', '굴삭기', 'CAN'), rec('A', '유럽', '지게차', 'CAN'), rec('B', '유럽', '굴삭기', 'HW'),
@@ -28,16 +29,41 @@ function small() {
 }
 
 console.log('초기 카탈로그');
-test('원문 항목 10개(기본 5 + 옵션 5)', () => {
+test('2026-09-29 구체화 카탈로그 — 기본 5 + 옵션 13, 이름·순서 원문 그대로', () => {
   const c = L.defaultCatalog();
-  assert.equal(L.fieldsOf(c, 'base').length, 5);
-  assert.deepEqual(L.fieldsOf(c, 'option').map(f => f.name), ['ATS type', 'CAN SA', 'Pedal type', 'starter control type', 'check engine lamp']);
+  assert.deepEqual(L.fieldsOf(c, 'base').map(f => f.name), ['고객사', 'engine suffix', 'Machine type', 'Emission regulation', '출력']);
+  assert.deepEqual(L.fieldsOf(c, 'option').map(f => f.name), ['ATS type', 'CAN1(J1939) baudrate', 'Accelerator type', 'starter control type',
+    'check engine lamp', 'Parking Brake', 'SAC lamp', 'Emergency stop', 'Oil pressure lamp', 'Regeneration demand switch',
+    'Regeneration inhibit switch', 'WIF', 'Electric feed pump']);
+});
+test('항목별 선택지 원문 그대로', () => {
+  const c = L.defaultCatalog();
+  const labels = id => L.getField(c, id).choices.map(x => x.label);
+  assert.deepEqual(labels('f_equip'), ['Excavator', 'Forklift', 'Generator', 'Loader', 'TLS']);
+  assert.deepEqual(labels('f_region'), ['Korea Stage5', 'EU Stage5', 'NA Tier4f', 'EU Stage3A', 'Unregulated']);
+  assert.deepEqual(labels('f_ats'), ['DOC+DPF', 'DOC_SDPF', 'DOC', 'Muffler']);
+  assert.deepEqual(labels('f_baud'), ['250kb', '500kb']);
+  assert.deepEqual(labels('f_accel'), ['CAN (SMVCU)', 'CAN (EEC2)', 'CAN (TSC1)', 'Hardwire Foot', 'Hardwire Foot and Hand']);
+  assert.deepEqual(labels('f_starter'), ['VCU control', 'ECU control']);
+  assert.deepEqual(labels('f_pbrake'), ['CAN (CCVS)', 'CAN (SMVCU)', 'Hardwire (Normally open)', 'Hardwire (Normally closed)']);
+  ['f_sac', 'f_estop', 'f_regen_dem', 'f_regen_inh'].forEach(id => assert.deepEqual(labels(id), ['CAN', 'Hardwire']));
+  ['f_wif', 'f_efp'].forEach(id => assert.deepEqual(labels(id), ['VCU', 'ECU']));
+});
+test('항목·선택지 id 가 모두 서로 다름', () => {
+  const c = L.defaultCatalog();
+  const ids = c.fields.flatMap(f => [f.id].concat(f.choices.map(x => x.id)));
+  assert.equal(new Set(ids).size, ids.length);
 });
 test('check engine lamp 선택지는 원문 그대로 CAN type / HW type', () => {
   assert.deepEqual(L.getField(L.defaultCatalog(), 'f_cel').choices.map(c => c.label), ['CAN type', 'HW type']);
 });
-test('원문에 선택지가 없는 옵션은 비어 있음(지어내지 않음)', () => {
-  assert.equal(L.getField(L.defaultCatalog(), 'f_ats').choices.length, 0);
+test('원문에 선택지가 없는 옵션(Oil pressure lamp)은 비어 있음(지어내지 않음)', () => {
+  assert.equal(L.getField(L.defaultCatalog(), 'f_oilp').choices.length, 0);
+});
+test('항목 추가는 여전히 가능 — 14번째 옵션', () => {
+  const c = L.defaultCatalog();
+  L.addField(c, { name: 'Coolant level lamp', kind: 'option' });
+  assert.equal(L.fieldsOf(c, 'option').length, 14);
 });
 
 console.log('카탈로그 편집');
@@ -48,13 +74,13 @@ test('항목 추가 — 옵션은 선택형, id 겹치지 않음', () => {
   assert.equal(c.fields.filter(x => x.id === f.id).length, 1);
 });
 test('이름이 대소문자·공백만 다르면 중복', () => {
-  assert.throws(() => L.addField(L.defaultCatalog(), { name: 'can sa', kind: 'option' }), /name_duplicate/);
+  assert.throws(() => L.addField(L.defaultCatalog(), { name: 'ats  TYPE', kind: 'option' }), /name_duplicate/);
   assert.throws(() => L.addField(L.defaultCatalog(), { name: 'CheckEngine Lamp', kind: 'option' }), /name_duplicate/);
 });
 test('선택지 추가·중복 거부', () => {
   const c = L.defaultCatalog();
-  L.addChoice(c, 'f_ats', 'Type 1');
-  assert.throws(() => L.addChoice(c, 'f_ats', ' type-1 '), /label_duplicate/);
+  L.addChoice(c, 'f_oilp', 'Type 1');
+  assert.throws(() => L.addChoice(c, 'f_oilp', ' type-1 '), /label_duplicate/);
   assert.throws(() => L.addChoice(c, 'f_cel', 'hw type'), /label_duplicate/);
 });
 test('선택지 이름을 고치면 레코드 표시도 바뀜(id 저장)', () => {
@@ -65,8 +91,8 @@ test('선택지 이름을 고치면 레코드 표시도 바뀜(id 저장)', () =
 test('항목 순서 이동은 같은 종류 안에서만', () => {
   const c = L.defaultCatalog();
   assert.equal(L.moveField(c, 'f_ats', -1), false); // 옵션 맨 위
-  assert.equal(L.moveField(c, 'f_cansa', -1), true);
-  assert.deepEqual(L.fieldsOf(c, 'option').slice(0, 2).map(f => f.id), ['f_cansa', 'f_ats']);
+  assert.equal(L.moveField(c, 'f_baud', -1), true);
+  assert.deepEqual(L.fieldsOf(c, 'option').slice(0, 2).map(f => f.id), ['f_baud', 'f_ats']);
   assert.equal(c.fields[4].id, 'f_power'); // 기본 정보는 그대로
 });
 test('선택지 사용 건수', () => {
@@ -140,7 +166,7 @@ test('지역 × check engine lamp 피벗 (손 계산)', () => {
   assert.deepEqual(p.cols.map(c => c.label), ['CAN type', 'HW type', '(미입력)']);
   // 유럽 3건: CAN 2(66.7%) HW 1(33.3%) / 미국 2건: HW 1(50%) 미입력 1(50%)
   assert.deepEqual(p.rows.map(r => [r.label, r.total, r.cells.map(c => c.count), r.cells.map(c => c.pct)]),
-    [['유럽', 3, [2, 1, 0], [66.7, 33.3, 0]], ['미국', 2, [0, 1, 1], [0, 50, 50]]]);
+    [['EU Stage5', 3, [2, 1, 0], [66.7, 33.3, 0]], ['NA Tier4f', 2, [0, 1, 1], [0, 50, 50]]]);
   assert.deepEqual(p.rows[0].top, { label: 'CAN type', count: 2, pct: 66.7 });
   assert.equal(p.rows[1].top.label, 'HW type'); // 미입력은 최다 후보에서 뺌
   assert.deepEqual(p.total.cells.map(c => c.count), [2, 2, 1]);
@@ -148,7 +174,7 @@ test('지역 × check engine lamp 피벗 (손 계산)', () => {
 });
 test('장비 유형 기준 — 미입력 묶음은 맨 뒤', () => {
   const { cat, records } = small();
-  assert.deepEqual(L.groupBy(cat, records, 'f_equip').map(g => [g.label, g.records.length]), [['굴삭기', 3], ['지게차', 1], ['(미입력)', 1]]);
+  assert.deepEqual(L.groupBy(cat, records, 'f_equip').map(g => [g.label, g.records.length]), [['Excavator', 3], ['Forklift', 1], ['(미입력)', 1]]);
 });
 test('고객사(글자) 기준 묶기', () => {
   const { cat, records } = small();
@@ -159,6 +185,75 @@ test('기준별 최다 선택지', () => {
   const { cat, records } = small();
   const t = L.topByAxis(cat, records, 'f_customer', ['f_cel', 'f_ats']);
   assert.deepEqual(t.map(r => [r.label, r.tops.f_cel && r.tops.f_cel.label, r.tops.f_ats]), [['A', 'CAN type', null], ['B', 'HW type', null], ['C', null, null]]);
+});
+
+console.log('적용 조건(규칙)');
+test('기본 규칙 3개 — 재생 스위치 2종은 DPF 있는 ATS, Parking Brake 는 발전기 제외', () => {
+  const c = L.defaultCatalog();
+  assert.deepEqual(L.rulesOf(c).map(r => r.target), ['f_regen_dem', 'f_regen_inh', 'f_pbrake']);
+  assert.ok(L.rulesOf(c).every(r => r.in.every(id => L.getChoice(L.getField(c, r.when), id))));
+});
+test('적용 여부 — 조건 값이 없으면 막지 않음', () => {
+  const c = L.defaultCatalog();
+  assert.equal(L.isApplicable(c, { f_ats: 'c_ats1' }, 'f_regen_dem'), true);   // DOC+DPF
+  assert.equal(L.isApplicable(c, { f_ats: 'c_ats2' }, 'f_regen_dem'), true);   // DOC_SDPF
+  assert.equal(L.isApplicable(c, { f_ats: 'c_ats3' }, 'f_regen_dem'), false);  // DOC
+  assert.equal(L.isApplicable(c, { f_ats: 'c_ats4' }, 'f_regen_inh'), false);  // Muffler
+  assert.equal(L.isApplicable(c, {}, 'f_regen_dem'), true);
+  assert.equal(L.isApplicable(c, { f_equip: 'c_equip3' }, 'f_pbrake'), false); // Generator
+  assert.equal(L.isApplicable(c, { f_equip: 'c_equip4' }, 'f_pbrake'), true);  // Loader
+  assert.equal(L.isApplicable(c, { f_equip: 'c_equip3' }, 'f_cel'), true);     // 규칙 없는 항목
+});
+test('검증 — 해당 없는 옵션에 값이 있으면 not_applicable', () => {
+  const c = L.defaultCatalog();
+  assert.deepEqual(L.validateRecord(c, { f_customer: 'A', f_equip: 'c_equip3', f_pbrake: 'c_pbrake1' }), [{ fieldId: 'f_pbrake', code: 'not_applicable' }]);
+  assert.deepEqual(L.validateRecord(c, { f_customer: 'A', f_equip: 'c_equip1', f_pbrake: 'c_pbrake1' }), []);
+});
+test('규칙 추가 — 잘못된 규칙 거부, 같은 target 규칙은 모두 맞아야 함', () => {
+  const c = L.defaultCatalog();
+  assert.throws(() => L.addRule(c, { target: 'f_wif', when: 'f_wif', in: ['c_wif1'] }), /rule_self/);
+  assert.throws(() => L.addRule(c, { target: 'f_power', when: 'f_equip', in: ['c_equip1'] }), /rule_target/);
+  assert.throws(() => L.addRule(c, { target: 'f_wif', when: 'f_customer', in: ['x'] }), /rule_when/);
+  assert.throws(() => L.addRule(c, { target: 'f_wif', when: 'f_equip', in: ['c_없음'] }), /rule_choices/);
+  assert.throws(() => L.addRule(c, { target: 'f_pbrake', when: 'f_equip', in: ['c_equip1'] }), /rule_duplicate/);
+  const r = L.addRule(c, { target: 'f_pbrake', when: 'f_region', in: ['c_region1', 'c_region1'] });
+  assert.equal(r.id, 'rule4'); assert.deepEqual(r.in, ['c_region1']);
+  assert.equal(L.isApplicable(c, { f_equip: 'c_equip1', f_region: 'c_region1' }, 'f_pbrake'), true);
+  assert.equal(L.isApplicable(c, { f_equip: 'c_equip1', f_region: 'c_region2' }, 'f_pbrake'), false);
+  assert.equal(L.removeRule(c, 'rule4'), true);
+  assert.equal(L.isApplicable(c, { f_equip: 'c_equip1', f_region: 'c_region2' }, 'f_pbrake'), true);
+});
+test('규칙 문장', () => {
+  const c = L.defaultCatalog();
+  assert.equal(L.ruleText(c, L.getRule(c, 'rule1')), '「Regeneration demand switch」은(는) 「ATS type」이(가) DOC+DPF · DOC_SDPF 일 때만 씁니다');
+});
+test('집계 — 해당 없음은 미입력과 따로 세고 최다 후보에서 뺌', () => {
+  const c = L.defaultCatalog();
+  const recs = [
+    { id: 'r1', v: { f_customer: 'A', f_equip: 'c_equip1', f_pbrake: 'c_pbrake2' } },
+    { id: 'r2', v: { f_customer: 'A', f_equip: 'c_equip1' } },               // 미입력
+    { id: 'r3', v: { f_customer: 'B', f_equip: 'c_equip3' } },               // 발전기 → 해당 없음
+    { id: 'r4', v: { f_customer: 'B', f_equip: 'c_equip3' } }];
+  const s = L.choiceStats(c, recs, 'f_pbrake');
+  assert.deepEqual(s.empty, { count: 1, pct: 25 }); assert.deepEqual(s.na, { count: 2, pct: 50 });
+  const p = L.pivot(c, recs, 'f_customer', 'f_pbrake');
+  assert.deepEqual(p.cols.slice(-2).map(x => x.label), [L.EMPTY_LABEL, L.NA_LABEL]);
+  assert.equal(p.rows.find(r => r.label === 'B').top, null);
+  assert.equal(p.total.top.label, 'CAN (SMVCU)');
+});
+test('규칙 위반 찾기 — 값은 지우지 않고 알려 줌', () => {
+  const c = L.defaultCatalog();
+  const recs = [{ id: 'r1', v: { f_ats: 'c_ats3', f_regen_dem: 'c_regdem1', f_regen_inh: 'c_reginh2' } }, { id: 'r2', v: { f_ats: 'c_ats1', f_regen_dem: 'c_regdem1' } }];
+  assert.deepEqual(L.ruleViolations(c, recs), [{ recordId: 'r1', fieldId: 'f_regen_dem', ruleId: 'rule1' }, { recordId: 'r1', fieldId: 'f_regen_inh', ruleId: 'rule2' }]);
+  assert.equal(L.choiceStats(c, recs, 'f_regen_dem').items.find(i => i.label === 'CAN').count, 2);
+});
+test('규칙은 백업에 담기고, 옛 백업(규칙 없음)은 빈 규칙으로 복원', () => {
+  const c = L.defaultCatalog();
+  const db = L.parseBackup(JSON.stringify(L.makeBackup({ catalog: c, records: [] })));
+  assert.equal(L.rulesOf(db.catalog).length, 3);
+  const old = L.makeBackup({ catalog: { fields: c.fields }, records: [] });
+  assert.deepEqual(L.parseBackup(JSON.stringify(old)).catalog.rules, []);
+  assert.equal(L.rulesSheet(c).length, 4);
 });
 
 console.log('엑셀 가져오기');
@@ -240,22 +335,42 @@ test('백업 → 복원', () => {
 });
 
 console.log('예시 데이터');
-test('예시 72건, 고객사 6곳 모두 「예시」 이름', () => {
+test('예시 96건, 고객사 8곳 모두 「예시」 이름', () => {
   const db = Sample.sampleDb();
-  assert.equal(db.records.length, 72); assert.equal(db._sample, true);
+  assert.equal(db.records.length, 96); assert.equal(db._sample, true);
   const names = L.groupBy(db.catalog, db.records, 'f_customer').map(g => g.label);
-  assert.equal(names.length, 6); assert.ok(names.every(n => n.startsWith('예시')));
+  assert.equal(names.length, 8); assert.ok(names.every(n => n.startsWith('예시')));
 });
-test('예시 데이터는 지역별 치우침이 보임 — 유럽 CAN 위주, 미국 HW 위주', () => {
+test('예시 데이터는 새 카탈로그 그대로 — 선택지를 새로 만들지 않음, 모든 장비 유형·배출 규제 등장', () => {
   const db = Sample.sampleDb();
-  const p = L.pivot(db.catalog, db.records, 'f_region', 'f_cel');
-  const row = label => p.rows.find(r => r.label === label);
-  assert.equal(row('유럽').top.label, 'CAN type');
-  assert.equal(row('미국').top.label, 'HW type');
+  assert.deepEqual(db.catalog.fields.map(f => f.choices.length), L.defaultCatalog().fields.map(f => f.choices.length));
+  assert.equal(L.groupBy(db.catalog, db.records, 'f_equip').length, 5);
+  assert.equal(L.groupBy(db.catalog, db.records, 'f_region').length, 5);
+  assert.ok(L.fieldsOf(db.catalog, 'option').every(f => f.id === 'f_oilp' || L.choiceStats(db.catalog, db.records, f.id).items.some(i => i.count)));
+});
+test('예시 데이터는 적용 조건을 어기지 않음', () => {
+  const db = Sample.sampleDb();
+  assert.equal(L.ruleViolations(db.catalog, db.records).length, 0);
+});
+test('예시 데이터 다빈도 — 배출 규제·장비 유형별 치우침이 보임', () => {
+  const db = Sample.sampleDb();
+  const top = (axis, opt, label) => L.pivot(db.catalog, db.records, axis, opt).rows.find(r => r.label === label).top.label;
+  assert.equal(top('f_region', 'f_ats', 'EU Stage5'), 'DOC_SDPF');
+  assert.equal(top('f_region', 'f_ats', 'Unregulated'), 'Muffler');
+  assert.equal(top('f_region', 'f_cel', 'Unregulated'), 'HW type');
+  assert.equal(top('f_region', 'f_baud', 'EU Stage5'), '500kb');
+  assert.equal(top('f_equip', 'f_accel', 'Forklift'), 'Hardwire Foot');
+  assert.equal(top('f_equip', 'f_starter', 'Generator'), 'ECU control');
+  // 발전기의 Parking Brake 는 전부 「해당 없음」 — 최다 후보에서 빠짐
+  const gen = L.pivot(db.catalog, db.records, 'f_equip', 'f_pbrake').rows.find(r => r.label === 'Generator');
+  assert.equal(gen.top, null);
+  assert.equal(gen.cells[gen.cells.length - 1].count, gen.total);
 });
 test('예시 파일 행은 열 맞추기 시험용 — 영문 열 이름, 표기 흔들림, 추가 열', () => {
   const rows = Sample.fileRows();
-  assert.ok('Customer' in rows[0] && '예시 옵션 X' in rows[0]);
+  assert.ok('Customer' in rows[0] && 'Emission' in rows[0] && '예시 옵션 X' in rows[0]);
+  const m = L.autoMap(Object.keys(rows[0]), L.defaultCatalog());
+  assert.equal(m.Emission, 'f_region'); assert.equal(m.Equipment, 'f_equip');
   assert.ok(rows.some(r => r['check engine lamp'] === 'CAN' || r['check engine lamp'] === 'hw type'));
 });
 
